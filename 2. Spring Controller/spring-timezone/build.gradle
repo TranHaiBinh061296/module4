@@ -22,9 +22,7 @@ tasks.withType(JavaCompile) {
 }
 
 dependencies {
-
-    implementation group: 'org.springframework', name: 'spring-webmvc', version: '5.3.20'
-
+    implementation group: 'org.springframework', name: 'spring-webmvc', version: '5.3.18'
 
 }
 
