@@ -16,8 +16,7 @@ public class SandwichController {
     @GetMapping(path = "/save")
     public String save(
             @RequestParam(required = false, name = "condiment") String[] condiment,
-            ModelMap modelMap
-    ) {
+            ModelMap modelMap) {
         if (condiment == null) {
             modelMap.addAttribute("message", "Chưa chọn gia vị !!!");
             return "index";
