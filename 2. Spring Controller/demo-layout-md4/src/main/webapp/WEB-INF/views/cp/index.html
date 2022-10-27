@@ -1,0 +1,110 @@
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+  <title>HB STORE</title>
+  <th:block th:replace="/cp/layout/head :: head"/>
+</head>
+
+<body>
+
+<!-- Begin page -->
+<div id="wrapper">
+
+
+  <!-- Topbar Start -->
+<th:block th:replace="/cp/layout/topbar :: topbar"/>
+  <!-- end Topbar --> <!-- ========== Left Sidebar Start ========== -->
+  <div class="left-side-menu">
+
+    <div class="slimscroll-menu">
+
+      <!--- Sidemenu -->
+    <th:block th:replace="/cp/layout/sidebar-menu-left :: sidebar-menu-left"/>
+      <!-- End Sidebar -->
+
+<!--      <div class="clearfix"></div>-->
+
+    </div>
+    <!-- Sidebar -left -->
+
+  </div>
+  <!-- Left Sidebar End -->
+
+  <!-- ============================================================== -->
+  <!-- Start Page Content here -->
+  <!-- ============================================================== -->
+
+  <div class="content-page">
+    <div class="content">
+
+      <!-- Start Content-->
+      <div class="container-fluid">
+
+        <!-- start page title -->
+        <div class="row">
+          <div class="col-12">
+            <div class="page-title-box">
+              <h4 class="page-title">Welcome !</h4>
+              <div class="page-title-right">
+                <ol class="breadcrumb p-0 m-0">
+                  <li class="breadcrumb-item"><a href="#">Velonic</a></li>
+                  <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                  <li class="breadcrumb-item active">Dashboard 1</li>
+                </ol>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+        </div>
+        <!-- end page title -->
+        <!-- end card-->
+
+      </div>
+      <!-- end col -->
+
+    </div>
+    <!-- End row -->
+
+    <div class="row">
+    </div>
+    <!-- End row -->
+
+  </div>
+  <!-- end container-fluid -->
+
+</div>
+<!-- end content -->
+
+
+
+<!-- Footer Start -->
+<th:block th:replace="/cp/layout/footer-end :: footer-end"/>
+<!-- end Footer -->
+
+</div>
+
+<!-- ============================================================== -->
+<!-- End Page content -->
+<!-- ============================================================== -->
+
+</div>
+<!-- END wrapper -->
+
+
+<!-- Right Sidebar -->
+<th:block th:replace="/cp/layout/right-sidebar :: right-sidebar"/>
+<!-- /Right-bar -->
+
+<!-- Right bar overlay-->
+<!--<div class="rightbar-overlay"></div>-->
+
+
+
+<!-- Vendor js -->
+<th:block th:replace="/cp/layout/script :: script"/>
+
+</body>
+</html>
