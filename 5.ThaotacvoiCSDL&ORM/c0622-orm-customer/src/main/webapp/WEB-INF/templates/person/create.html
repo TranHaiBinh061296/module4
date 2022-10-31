@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Person Create</title>
+</head>
+<body>
+    <h1>TỜ KHAI Y TẾ</h1>
+
+    <form th:object="${person}" method="post">
+        <div>
+            <label for="fullName">Họ tên</label>
+            <input type="text" id="fullName" name="fullName">
+        </div>
+
+        <div>
+            <label for="vehicleNumber">Số hiệu phương tiện</label>
+            <input type="text" id="vehicleNumber" name="vehicleNumber">
+        </div>
+
+        <div>
+            <label for="yob">Năm sinh</label>
+            <select name="yob" id="yob">
+                <option value="1990">1990</option>
+                <option value="1991">1991</option>
+                <option value="1992">1992</option>
+                <option value="1993">1993</option>
+                <option value="1994">1994</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="departureDay">Ngày khởi hành</label>
+            <div>
+                <input type="number" id="departureDay" name="departureDay">
+            </div>
+            <div>
+                <input type="number" id="departureMonth" name="departureMonth">
+            </div>
+            <div>
+                <input type="number" id="departureYear" name="departureYear">
+            </div>
+        </div>
+
+        <div>
+            <button type="submit">
+                Gửi tờ khai
+            </button>
+        </div>
+    </form>
+</body>
+</html>
