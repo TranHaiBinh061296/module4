@@ -11,14 +11,19 @@ public class ProductCPController {
     @GetMapping
     public ModelAndView showProductList() {
         ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("cp/product/test");
+        return  modelAndView;
+    }
+    @GetMapping("/list")
+    public ModelAndView showProductTest() {
+        ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("cp/product/list");
         return  modelAndView;
     }
-//    @GetMapping("/edit")
-//    public ModelAndView showProductL() {
-//        ModelAndView modelAndView = new ModelAndView();
-//        modelAndView.setViewName("cp/product/edit");
-//        return  modelAndView;
-//    }
-
+    @GetMapping("/edit")
+    public ModelAndView showProductEdit() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("cp/product/edit");
+        return  modelAndView;
+    }
 }
