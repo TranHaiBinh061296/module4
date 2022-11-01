@@ -24,7 +24,7 @@ tasks.withType(JavaCompile) {
 dependencies {
     compileOnly('javax.servlet:javax.servlet-api:4.0.1')
 
-        implementation group: 'org.springframework', name: 'spring-webmvc', version: '5.3.20'
+    implementation group: 'org.springframework', name: 'spring-webmvc', version: '5.3.20'
 }
 
 test {
