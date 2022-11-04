@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <th:block th:replace="layout/head :: head"/>
+  <title>Create Customer</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    .form-create {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .table-title {
+      background: #299be4;
+      color: #fff;
+      padding: 16px 30px;
+      border-radius: 3px 3px 0 0;
+    }
+
+    .table-title .btn {
+      float: right;
+      min-width: 50px;
+      outline: none !important;
+      margin-top: 10px;
+      margin-left: 10px;
+    }
+
+    .table-title .btn:hover {
+      background-color: rgb(79, 215, 243);
+    }
+
+    .row p {
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    .btn-action button {
+      margin-top: 20px;
+    }
+    .alert-success {
+      color: green;
+    }
+
+  </style>
+</head>
+
+<body>
+<div class="container">
+  <div class="table-title">
+    <div class="row">
+      <div class="col-sm-5">
+        <h1>Create Customer</h1>
+      </div>
+      <div class="col-sm-7 btn-a">
+        <a class="btn btn-outline-light" href="/customers"><i class="fa fa-list"></i> List of customers
+        </a>
+      </div>
+    </div>
+  </div>
+  <form id="frmCreateCustomer" method="post" th:object="${customer}">
+    <div class="form-create">
+      <div class="row col-6">
+        <div class="col-ms-6">
+          <p>Full Name</p>
+          <input type="text" class="form-control" th:field="*{fullName}">
+        </div>
+        <div class="col-ms-6">
+          <p>Phone</p>
+          <input type="tel" class="form-control" th:field="*{phone}">
+        </div>
+      </div>
+      <div class="row col-6">
+        <div class="col-ms-6">
+          <p>Email</p>
+          <input type="text" class="form-control" th:field="*{email}">
+        </div>
+        <div class="col-ms-6">
+          <p>Address</p>
+          <input type="text" class="form-control" th:field="*{address}">
+        </div>
+      </div>
+    </div>
+    <div class="btn-action">
+      <button type="submit" class="btn btn-outline-primary">
+        <i class="fa-solid fa-plus"></i> Create customer
+      </button>
+    </div>
+  </form>
+  <div class="footer">
+    <div id="message-alert">
+      <th:block th:if="${success} == true">
+        <div class="alert-success">
+          <h5><span>Thêm khách hàng thành công</span></h5>
+        </div>
+      </th:block>
+      <th:block th:if="${error} == true">
+        <div class="alert-danger">
+          <h5>ERROR !!!</h5>
+          <ul>
+            <li th:each="err : ${#fields.errors('customer.*')}" th:text="${err}"></li>
+          </ul>
+        </div>
+      </th:block>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>

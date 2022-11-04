@@ -2,10 +2,9 @@ package com.codegym.controller;
 
 import com.codegym.model.Customer;
 import com.codegym.model.Deposit;
-import com.codegym.model.WithDraw;
+import com.codegym.model.Withdraw;
 import com.codegym.service.customer.ICustomerService;
 import com.codegym.service.deposit.IDepositService;
-import com.codegym.service.withdraw.IWithdrawService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -20,38 +19,17 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/customers")
 public class CustomerController {
-
     @Autowired
     private ICustomerService customerService;
 
     @Autowired
     private IDepositService depositService;
 
-    @Autowired
-    private IWithdrawService withdrawService;
-
-
     @GetMapping
     public ModelAndView showListPage() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("customer/list");
-
-        List<Customer> customers = customerService.findAll();
-
-        modelAndView.addObject("customers", customers);
-
-        return modelAndView;
-    }
-
-    @GetMapping("/search")
-    public ModelAndView showSearchPage(@RequestParam String keySearch) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("customer/list");
-
-        keySearch = "%" + keySearch + "%";
-
-        List<Customer> customers = customerService.findAllByFullNameLikeOrEmailLike(keySearch, keySearch);
-
+        List<Customer> customers = customerService.findAllByDeletedIsFalse();
         modelAndView.addObject("customers", customers);
 
         return modelAndView;
@@ -61,83 +39,86 @@ public class CustomerController {
     public ModelAndView showCreatePage() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("customer/create");
-
         modelAndView.addObject("customer", new Customer());
-
         return modelAndView;
     }
 
     @PostMapping("/create")
-    public ModelAndView create(@ModelAttribute Customer customer) {
+    public ModelAndView doCreate(@Validated @ModelAttribute Customer customer, BindingResult bindingResult) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("customer/create");
+
+        if (bindingResult.hasFieldErrors()) {
+            modelAndView.addObject("error", true);
+            return modelAndView;
+        }
 
         try {
             customer.setId(0L);
             customer.setBalance(new BigDecimal(0L));
             customerService.save(customer);
+
             modelAndView.addObject("customer", new Customer());
-            modelAndView.addObject("success", "Tạo khách hàng mới thành công !!!");
+            modelAndView.addObject("success", true);
         } catch (Exception e) {
-            modelAndView.addObject("error", "Thao tác không thành công, vui lòng liên hệ Administrator");
+            modelAndView.addObject("error", true);
         }
+        return modelAndView;
+    }
+
+    @GetMapping("/edit/{customerId}")
+    public ModelAndView showEditPage(@PathVariable long customerId) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("customer/edit");
+        Optional<Customer> customerOptional = customerService.findById(customerId);
+
+        if(!customerOptional.isPresent()){
+            modelAndView.addObject("error",true);
+        }
+        Customer customer = customerOptional.get();
+        modelAndView.addObject("customer", customer);
 
         return modelAndView;
     }
 
-    @GetMapping("/edit/{id}")
-    public ModelAndView showUpdateForm(@PathVariable Long id) {
-        Optional<Customer> customer = customerService.findById(id);
+    @PostMapping("/edit/{customerId}")
+    public ModelAndView doUpdate(@PathVariable long customerId,@Validated @ModelAttribute Customer customer, BindingResult bindingResult) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("customer/edit");
 
-        if (customer.isPresent()) {
-            ModelAndView modelAndView = new ModelAndView();
-            modelAndView.setViewName("/customer/edit");
-            modelAndView.addObject("customer", customer.get());
+        Optional<Customer> customerOptional = customerService.findById(customerId);
 
-            return modelAndView;
-        } else {
-            return new ModelAndView("/error");
+        if (!customerOptional.isPresent()){
+            modelAndView.addObject("error", true);
         }
-    }
-
-    @PostMapping("/edit/{id}")
-    public ModelAndView updateCustomer(@Validated @ModelAttribute("customer") Customer customer, BindingResult bindingResult) {
-        ModelAndView modelAndView = new ModelAndView("/customer/edit");
 
         if (bindingResult.hasFieldErrors()) {
-            modelAndView.addObject("error", "Không đúng định dạng !!!");
-        } else {
-            try {
-                customerService.save(customer);
-
-                modelAndView.addObject("customer", customer);
-                modelAndView.addObject("success", "Cập nhật thành công !!!");
-            } catch (Exception e) {
-                e.printStackTrace();
-                modelAndView.addObject("error", "Thao tác không thành công, vui lòng liên hệ Administrator");
-            }
+            modelAndView.addObject("error", true);
+            return modelAndView;
         }
+        customer.setId(customerId);
+        Customer newCustomer = customerService.save(customer);
+        modelAndView.addObject("success", true);
+        modelAndView.addObject("customer", newCustomer);
 
         return modelAndView;
     }
 
-    @GetMapping("/deposit/{cid}")
-    public ModelAndView showDepositPage(@PathVariable Long cid) {
+    @GetMapping("/deposit/{customerId}")
+    public ModelAndView showDepositPage(@PathVariable long customerId) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("customer/deposit");
 
-        modelAndView.addObject("deposit", new Deposit());
-
-        Optional<Customer> customerOptional = customerService.findById(cid);
+        Optional<Customer> customerOptional = customerService.findById(customerId);
 
         if (!customerOptional.isPresent()) {
-            modelAndView.addObject("customer", new Customer());
-            modelAndView.addObject("error", "ID khách hàng không hợp lệ");
-            return modelAndView;
+            modelAndView.addObject("error", "Id khách hàng không hợp lệ");
         }
-
-        modelAndView.addObject("customer", customerOptional.get());
-
+        else {
+            Deposit deposit = new Deposit();
+            modelAndView.addObject("deposit", deposit);
+            modelAndView.addObject("customer", customerOptional.get());
+        }
         return modelAndView;
     }
 
@@ -154,97 +135,70 @@ public class CustomerController {
         }
 
         Customer customer = customerOptional.get();
-
         try {
             customerService.deposit(deposit, customer);
 
-            modelAndView.addObject("deposit", new Deposit());
             modelAndView.addObject("customer", customer);
+            modelAndView.addObject("deposit", new Deposit());
             modelAndView.addObject("success", "Gửi tiền thành công");
         } catch (Exception e) {
-            modelAndView.addObject("deposit", new Deposit());
             modelAndView.addObject("customer", customer);
+            modelAndView.addObject("deposit", new Deposit());
             modelAndView.addObject("error", "Thao tác không thành công, vui lòng liên hệ Administrator");
         }
 
         return modelAndView;
     }
 
-    @GetMapping("/withdraw/{cid}")
-    public ModelAndView showWithdrawPage(@PathVariable Long cid) {
+    @GetMapping("/withdraw/{customerId}")
+    public ModelAndView showWithdrawPage(@PathVariable long customerId) {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("/customer/withdraw");
-        modelAndView.addObject("withdraw", new WithDraw());
-        Optional<Customer> customerOptional = customerService.findById(cid);
+        modelAndView.setViewName("customer/withdraw");
+
+        Optional<Customer> customerOptional = customerService.findById(customerId);
+
         if (!customerOptional.isPresent()) {
-            modelAndView.addObject("error", "ID khách hàng không hợp lệ");
-            return modelAndView;
+            modelAndView.addObject("error", "Id khách hàng không hợp lệ");
         }
-        modelAndView.addObject("customer", customerOptional.get());
+        else {
+            Withdraw withdraw = new Withdraw();
+            modelAndView.addObject("withdraw", withdraw);
+            modelAndView.addObject("customer", customerOptional.get());
+        }
         return modelAndView;
     }
 
     @PostMapping("/withdraw/{cid}")
-    public ModelAndView withdraw(@PathVariable("cid") Long cid, @ModelAttribute WithDraw withdraw) {
+    public ModelAndView withdraw(@ModelAttribute Withdraw withdraw, @PathVariable Long cid) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("customer/withdraw");
+
         Optional<Customer> customerOptional = customerService.findById(cid);
+
         if (!customerOptional.isPresent()) {
             modelAndView.addObject("error", "ID khách hàng không hợp lệ");
             return modelAndView;
         }
-        Customer customer = customerOptional.get();
-        if (customerService.withdraw(withdraw,customer)) {
-            try {
 
-//           customerService.withdraw(withdraw, customer);
-                modelAndView.addObject("withdraw", new WithDraw());
+        Customer customer = customerOptional.get();
+        try {
+            if(customerService.withdraw(withdraw, customer)){
                 modelAndView.addObject("customer", customer);
+                modelAndView.addObject("withdraw", new Withdraw());
                 modelAndView.addObject("success", "Rút tiền thành công");
-            } catch (Exception e) {
-                modelAndView.addObject("withdraw", new WithDraw());
-                modelAndView.addObject("customer", customer);
-                modelAndView.addObject("error", "Số tiền trong tài khoản không đủ !!!");
             }
-        } else {
-            modelAndView.addObject("withdraw", new WithDraw());
+            else{
+                modelAndView.addObject("customer", customer);
+                modelAndView.addObject("withdraw", new Withdraw());
+                modelAndView.addObject("error", "Thao tác không thành công, vui lòng liên hệ Administrator");
+            }
+
+        } catch (Exception e) {
             modelAndView.addObject("customer", customer);
-            modelAndView.addObject("error", "Số tiền trong tài khoản không đủ !!!");
+            modelAndView.addObject("withdraw", new Withdraw());
+            modelAndView.addObject("error", "Thao tác không thành công, vui lòng liên hệ Administrator");
         }
 
         return modelAndView;
     }
-    @GetMapping("/suspension/{id}")
-    public ModelAndView showSuspensionCustomer(@PathVariable Long id) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("customer/suspension");
-
-        Optional<Customer> customer = customerService.findById(id);
-
-        if (customer.isPresent()) {
-            modelAndView.addObject("customer", customer.get());
-            return modelAndView;
-        } else {
-            modelAndView.addObject("message", "No");
-            return modelAndView;
-        }
-    }
-    @PostMapping("/suspended/{id}")
-    public ModelAndView suspendedCustomer(@PathVariable Long id) {
-        ModelAndView modelAndView = new ModelAndView("/customer/suspension");
-
-        Optional<Customer> customer = customerService.findById(id);
-
-        if (customer.isPresent()) {
-//            customer.get().setDeleted(true);
-            customerService.save(customer.get());
-            modelAndView.addObject("customer", customerService.findById(id).get());
-            modelAndView.addObject("success", "Customer suspended successfully");
-            return modelAndView;
-        } else {
-            return new ModelAndView("/error");
-        }
-    }
-
-
 }

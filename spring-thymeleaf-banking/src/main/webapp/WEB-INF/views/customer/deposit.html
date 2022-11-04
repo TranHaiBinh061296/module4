@@ -3,117 +3,65 @@
 
 <head>
     <th:block th:replace="layout/head :: head"/>
-    <title>Deposit Customer</title>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0 auto;
-        }
-
-        .form-edit {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .table-title {
-            background-color: rgb(84, 84, 229);
-            color: white;
-            padding: 16px 30px;
-            border-radius: 3px 3px 0 0;
-        }
-
-        .table-title .btn {
-            float: right;
-            outline: none;
-            min-width: 50px;
-            margin-top: 10px;
-            margin-left: 10px;
-            margin-right: 50px;
-        }
-
-        .table-title .btn:hover {
-            background-color: aqua;
-        }
-
-        .row p {
-            font-weight: bold;
-            margin: 10px 0;
-        }
-
-        .btn-deposit {
-            margin-top: 20px;
-        }
-
-        .btn-deposit button:hover {
-            background-color: green;
-            color: white;
-        }
-        input > readonly {
-            background-color: grey;
-        }
-    </style>
+    <title>Deposit</title>
+</head>
 
 <body>
 <div class="container">
-    <div class="table-title">
+    <div class="head">
         <div class="row">
-            <div class="col-sm-5">
-                <h2>Deposit money into customer's account</h2>
+            <div class="col-sm-9">
+                <h1>Deposit money into customer's account</h1>
             </div>
-            <div class="col-sm-7">
-                <a href="/customers" class="btn btn-outline-light"><i class="fa fa-list"></i>Customer list</a>
+            <div class="col-sm-3 btn-a">
+                <a class="btn btn-outline-light" href="/customers" title="Hello" id="id1"><i
+                        class="fa fa-list"></i> List of customers
+                </a>
             </div>
         </div>
     </div>
-    <form id="frmDeposit" method="post" th:object="${deposit}">
-        <div class="form-edit">
-            <div class="row col-6">
-                <div class="col-ms-6">
-                    <p>Customer ID</p>
-                    <input class="form-control" readonly type="text" th:field="${customer.id}">
+    <div class="content">
+        <form method="post" th:object="${deposit}">
+            <fieldset class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Customer ID</label>
+                    <input type="text" class="form-control" th:field="${customer.id}" readonly>
                 </div>
-                <div class="col-ms-6">
-                    <p>Current balance ($)</p>
-                    <input class="form-control" type="text" readonly name="balance" th:value="${customer.getBalance()}">
+                <div class="col-md-6">
+                    <label class="form-label">Full name</label>
+                    <input type="text" class="form-control" th:field="${customer.fullName}" readonly>
                 </div>
-            </div>
-            <div class="row col-6">
-                <div class="col-ms-6">
-                    <p>Full Name</p>
-                    <input type="text" class="form-control" readonly th:field="${customer.fullName}">
+                <div class="col-md-6">
+                    <label class="form-label">Current balance ($)</label>
+                    <input type="number" class="form-control" th:field="${customer.balance}" readonly>
                 </div>
-                <div class="col-ms-6">
-                    <p>Transaction Amount ($)</p>
-                    <input type="number" class="form-control" th:field="*{transactionAmount}">
+                <div class="col-md-6">
+                    <label class="form-label">Transaction Amount ($)</label>
+                    <input type="number" class="form-control" th:field="*{transactionAmount}" min="100000" step="50000">
                 </div>
-            </div>
-
-        </div>
-        <div class="btn-deposit">
-            <button class="btn btn-outline-success" type="submit" id="btnDeposit"><i class="fa-solid fa-plus"></i>
-                Deposit
-            </button>
-        </div>
-    </form>
-    <footer>
+                <div class="col-md-12">
+                    <button type="submit" id="btnCreateCustomer" class="btn btn-outline-success">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        Deposit
+                    </button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <div class="footer">
         <div id="message-alert">
+            <th:block th:if="${success} ">
+                <div class="alert-success">
+                    <h5 th:text="${success}"></h5>
+                </div>
+            </th:block>
             <th:block th:if="${error}">
                 <div class="alert-danger">
-                    <label class="error" th:text="${error}"></label>
-                </div>
-            </th:block>
-
-            <th:block th:if="${success}">
-                <div class="alert-success message-success">
-                    <label th:text="${success}"></label>
+                    <h5 th:text="${error}"></h5>
                 </div>
             </th:block>
         </div>
-    </footer>
+    </div>
 </div>
 </body>
-
 </html>

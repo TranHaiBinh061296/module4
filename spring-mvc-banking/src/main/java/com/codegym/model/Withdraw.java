@@ -1,25 +1,27 @@
 package com.codegym.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "withdraw")
-public class WithDraw {
+public class Withdraw extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
+    @ManyToOne(targetEntity = Customer.class)
+    @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
     private Customer customer;
 
-    @Column(name = "transaction_amount", precision = 12, scale = 1, nullable = false)
+    @Column(name = "transaction_amount", precision = 12, scale = 0, nullable = false)
+    @Min(0)
     private BigDecimal transactionAmount;
 
-    public WithDraw() {
+    public Withdraw() {
     }
 
-    public WithDraw(Long id, Customer customer, BigDecimal transactionAmount) {
+    public Withdraw(Long id, Customer customer, BigDecimal transactionAmount) {
         this.id = id;
         this.customer = customer;
         this.transactionAmount = transactionAmount;

@@ -2,7 +2,7 @@ package com.codegym.service.customer;
 
 import com.codegym.model.Customer;
 import com.codegym.model.Deposit;
-import com.codegym.model.WithDraw;
+import com.codegym.model.Withdraw;
 import com.codegym.repository.CustomerRepository;
 import com.codegym.repository.DepositRepository;
 import com.codegym.repository.WithdrawRepository;
@@ -17,24 +17,20 @@ import java.util.Optional;
 @Service
 @Transactional
 public class CustomerServiceImpl implements ICustomerService {
-
     @Autowired
     private CustomerRepository customerRepository;
-
     @Autowired
     private DepositRepository depositRepository;
-
     @Autowired
     private WithdrawRepository withdrawRepository;
-
     @Override
     public List<Customer> findAll() {
         return customerRepository.findAll();
     }
 
     @Override
-    public List<Customer> findAllByFullNameLikeOrEmailLike(String fullName, String email) {
-        return customerRepository.findAllByFullNameLikeOrEmailLike(fullName, email);
+    public List<Customer> findAllByFullNameLikeOrEmailOrPhoneOrAddressLike(String valueSearch) {
+        return customerRepository.findAllByFullNameLikeOrEmailOrPhoneOrAddressLike(valueSearch, valueSearch, valueSearch, valueSearch);
     }
 
     @Override
@@ -46,6 +42,10 @@ public class CustomerServiceImpl implements ICustomerService {
     public Optional<Customer> findById(Long id) {
         return customerRepository.findById(id);
     }
+    @Override
+    public List<Customer> findAllByDeletedIsFalse() {
+        return customerRepository.findAllByDeletedIsFalse();
+    }
 
     @Override
     public void deposit(Deposit deposit, Customer customer) {
@@ -56,35 +56,42 @@ public class CustomerServiceImpl implements ICustomerService {
         BigDecimal currentBalance = customer.getBalance();
         BigDecimal transactionAmount = deposit.getTransactionAmount();
         BigDecimal newBalance = currentBalance.add(transactionAmount);
-        customer.setBalance(newBalance);
-        customerRepository.save(customer);
+        customerRepository.setBalance(customer.getId(), newBalance);
     }
 
     @Override
-    public boolean withdraw(WithDraw withdraw, Customer customer) {
-        withdraw.setId(0L);
-        withdraw.setCustomer(customer);
+    public boolean withdraw(Withdraw withdraw, Customer customer) {
         BigDecimal currentBalance = customer.getBalance();
         BigDecimal transactionAmount = withdraw.getTransactionAmount();
-        if (currentBalance.compareTo(transactionAmount) >= 0) {
-            BigDecimal newBalance = currentBalance.subtract(transactionAmount);
-            customer.setBalance(newBalance);
-            withdrawRepository.save(withdraw);
-            customerRepository.save(customer);
-            return true;
-        } else {
+        BigDecimal newBalance = currentBalance.subtract(transactionAmount);
+        BigDecimal big0 = new BigDecimal(0);
+        if(newBalance.compareTo(big0)<0){
             return false;
         }
+        customerRepository.setBalance(customer.getId(),newBalance);
 
+        withdraw.setId(0L);
+        withdraw.setCustomer(customer);
+        withdrawRepository.save(withdraw);
+        return true;
     }
 
+    @Override
+    public Boolean existsByIdEquals(long id) {
+        return customerRepository.existsById(id);
+    }
     @Override
     public Customer save(Customer customer) {
         return customerRepository.save(customer);
     }
 
     @Override
+    public Iterable<Customer> findAllByIdNot(Long id) {
+        return customerRepository.findAllByIdIsNot(id);
+    }
+
+    @Override
     public void remove(Long id) {
-        customerRepository.deleteById(id);
+
     }
 }

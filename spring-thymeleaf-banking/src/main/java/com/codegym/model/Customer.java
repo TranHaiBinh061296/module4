@@ -1,110 +1,55 @@
 package com.codegym.model;
 
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
-import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Table(name = "customers")
-public class Customer {
+public class Customer extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    private long id;
 
     @Column(name = "full_name", nullable = false)
+    @NotEmpty(message = "Họ tên không được để trống")
+    @Size(min = 5, max = 100, message = "Họ tên có độ dài nằm trong khoảng 5-100 ký tự")
     private String fullName;
 
-    @Email(message = "Địa chỉ email không đúng định dạng !!!.")
-    @Size(min = 5, max = 50, message = "Độ dài từ 5 đến 50 ký tự")
-    @Column(nullable = false, unique = true)
+    @Column(unique = true, nullable = false)
+    @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Email không đúng định dạng (VD: codegym@gmail.com)")
     private String email;
 
+    @Column(unique = true, nullable = false)
+    @Pattern(regexp = "^0[0-9]{9}$", message = "Vui lòng nhập đúng định dạng số điện thoại")
     private String phone;
 
     private String address;
 
-    @Column(precision = 12, scale = 0, nullable = false)
+    @Column(precision = 12, scale = 0, nullable = false, updatable = false)
     private BigDecimal balance;
-
 
     @OneToMany
     private List<Deposit> deposits;
 
-    public Customer() {
-    }
+    @OneToMany
+    private List<Withdraw> withdraws;
 
-    public Customer(Long id, String fullName, String email, String phone, String address, BigDecimal balance) {
-        this.id = id;
-        this.fullName = fullName;
-        this.email = email;
-        this.phone = phone;
-        this.address = address;
-        this.balance = balance;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
-    }
-
-    @Override
-    public String toString() {
-        return "Customer{" +
-                "id=" + id +
-                ", fullName='" + fullName + '\'' +
-                ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
-                ", address='" + address + '\'' +
-                ", balance=" + balance +
-                '}';
-    }
-
+    @OneToMany
+    private List<Transfer> transfers;
 
 }

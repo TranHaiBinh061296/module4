@@ -3,104 +3,65 @@
 
 <head>
     <th:block th:replace="layout/head :: head"/>
-    <title>Create Customer</title>
     <title>Withdraw</title>
 </head>
-<style>
-    * {
-        box-sizing: border-box;
-    }
-    body {
-        margin: 0 auto;
-    }
-
-    .form-edit {
-        display: flex;
-        justify-content: space-between;
-    }
-    .table-title {
-        background-color: rgb(84, 84, 229);
-        color: white;
-        padding: 16px 30px;
-        border-radius: 3px 3px 0 0;
-    }
-    .table-title  .btn {
-        float: right;
-        outline: none;
-        min-width: 50px;
-        margin-top: 10px;
-        margin-left: 10px;
-        margin-right: 50px;
-    }
-    .table-title  .btn:hover {
-        background-color: aqua;
-    }
-    .row p {
-        font-weight: bold;
-        margin: 10px 0;
-    }
-    .btn-withdraw {
-        margin-top: 20px;
-    }
-    .btn-withdraw button:hover {
-        background-color: orange;
-        color: white;
-    }
-</style>
 
 <body>
 <div class="container">
-    <div class="table-title">
+    <div class="head">
         <div class="row">
-            <div class="col-sm-6">
-                <h2>Withdraw money from the customer's account</h2>
+            <div class="col-sm-9">
+                <h1>Withdraw money from the customer's account</h1>
             </div>
-            <div class="col-sm-6">
-                <a href="/customers" class="btn btn-outline-light"><i class="fa fa-list"></i>Customer list</a>
+            <div class="col-sm-3 btn-a">
+                <a class="btn btn-outline-light" href="/customers" title="Hello" id="id1"><i
+                        class="fa fa-list"></i> List of customers
+                </a>
             </div>
         </div>
     </div>
-    <form id="frmWithdraw" method="post" th:object="${withdraw}">
-        <div class="form-edit">
-            <div class="row col-6">
-                <div class="col-ms-6">
-                    <p>Customer ID</p>
-                    <input class="form-control" type="number" readonly th:field="${customer.id}">
+    <div class="content">
+        <form method="post" th:object="${withdraw}">
+            <fieldset class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Customer ID</label>
+                    <input type="text" class="form-control" th:field="${customer.id}" readonly>
                 </div>
-                <div class="col-ms-6">
-                    <p>Current balance ($)</p>
-                    <input class="form-control" readonly type="number" name="balance" th:value="${customer.getBalance()}">
+                <div class="col-md-6">
+                    <label class="form-label">Full name</label>
+                    <input type="text" class="form-control" th:field="${customer.fullName}" readonly>
                 </div>
-            </div>
-            <div class="row col-6">
-                <div class="col-ms-6">
-                    <p>Full Name</p>
-                    <input type="text" readonly class="form-control" th:field="${customer.fullName}">
+                <div class="col-md-6">
+                    <label class="form-label">Current balance ($)</label>
+                    <input type="number" class="form-control" th:field="${customer.balance}" readonly>
                 </div>
-                <div class="col-ms-6">
-                    <p>Transaction Amount ($)</p>
-                    <input type="number" class="form-control" th:field="*{transactionAmount}">
+                <div class="col-md-6">
+                    <label class="form-label">Transaction Amount ($)</label>
+                    <input type="number" class="form-control" th:field="*{transactionAmount}" min="100000" step="50000">
                 </div>
-            </div>
+                <div class="col-md-12">
+                    <button type="submit" id="btnCreateCustomer" class="btn btn-outline-warning">
+                        <i class="fa fa-square-minus" aria-hidden="true"></i>
+                        Withdraw
+                    </button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <div class="footer">
+        <div id="message-alert">
+            <th:block th:if="${success} ">
+                <div class="alert-success">
+                    <h5 th:text="${success}"></h5>
+                </div>
+            </th:block>
+            <th:block th:if="${error}">
+                <div class="alert-danger">
+                    <h5 th:text="${error}"></h5>
+                </div>
+            </th:block>
         </div>
-        <div class="btn-withdraw">
-            <button class="btn btn-outline-warning" type="submit"><i class="fa-solid fa-minus"></i> Withdraw</button>
-        </div>
-    </form>
-    <footer>
-        <th:block th:if="${error}">
-            <div class="alert-danger">
-                <label class="error" th:text="${error}"></label>
-            </div>
-        </th:block>
-
-        <th:block th:if="${success}">
-            <div class="alert-success message-success">
-                <label th:text="${success}"></label>
-            </div>
-        </th:block>
-    </footer>
+    </div>
 </div>
 </body>
-
 </html>

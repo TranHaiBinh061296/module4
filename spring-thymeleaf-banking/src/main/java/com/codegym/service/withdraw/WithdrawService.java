@@ -1,6 +1,6 @@
 package com.codegym.service.withdraw;
 
-import com.codegym.model.WithDraw;
+import com.codegym.model.Withdraw;
 import com.codegym.repository.WithdrawRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,22 +14,22 @@ public class WithdrawService implements IWithdrawService{
     @Autowired
     private WithdrawRepository withdrawRepository ;
     @Override
-    public List<WithDraw> findAll() {
+    public List<Withdraw> findAll() {
         return withdrawRepository.findAll();
     }
 
     @Override
-    public WithDraw getById(Long id) {
+    public Withdraw getById(Long id) {
         return withdrawRepository.getById(id);
     }
 
     @Override
-    public Optional<WithDraw> findById(Long id) {
+    public Optional<Withdraw> findById(Long id) {
         return withdrawRepository.findById(id);
     }
 
     @Override
-    public WithDraw save(WithDraw withDraw) {
+    public Withdraw save(Withdraw withDraw) {
         return withdrawRepository.save(withDraw);
     }
 

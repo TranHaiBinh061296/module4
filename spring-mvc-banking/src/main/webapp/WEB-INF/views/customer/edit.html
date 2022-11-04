@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:replace="layout/head :: head"/>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0 auto;
+        }
+
+        .form-edit {
+            display: flex;
+            justify-content: space-between;
+        }
+        .table-title {
+            background-color: rgb(84, 84, 229);
+            color: white;
+            padding: 16px 30px;
+            border-radius: 3px 3px 0 0;
+        }
+        .table-title  .btn {
+            float: right;
+            outline: none;
+            min-width: 50px;
+            margin-top: 10px;
+            margin-left: 10px;
+            margin-right: 50px;
+        }
+        .table-title  .btn:hover {
+            background-color: aqua;
+        }
+        .row p {
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .btn-edit {
+            margin-top: 20px;
+        }
+        .btn-edit button:hover {
+            background-color: gray;
+            color: white;
+        }
+    </style>
+
+<body>
+<div class="container">
+    <div class="table-title">
+        <div class="row">
+            <div class="col-sm-5">
+                <h1>Update customer information</h1>
+            </div>
+            <div class="col-sm-7">
+                <a href="/customers" class="btn btn-outline-light"><i class="fa fa-list"></i> Customer list</a>
+            </div>
+        </div>
+    </div>
+    <form id="frmUpdateCustomer" method="post" th:action="@{/customers/edit/__${customer.getId()}__}" th:object="${customer}">
+        <div class="form-edit">
+            <div class="row col-6">
+                <div class="col-ms-6">
+                    <input type="hidden" name="id" id="id" th:field="*{id}">
+                    <input type="hidden" name="balance" id="balance" th:field="*{balance}">
+                    <p>Full Name</p>
+                    <input type="text" class="form-control" id="fullName" name="fullName" th:field="*{fullName}">
+                </div>
+                <div class="col-ms-6">
+                    <p>Phone</p>
+                    <input type="tel" class="form-control" id="phone" name="phone" th:field="*{phone}">
+                </div>
+            </div>
+            <div class="row col-6">
+                <div class="col-ms-6">
+                    <p>Email</p>
+                    <input type="email" class="form-control" id="email" name="email" th:field="*{email}">
+                </div>
+                <div class="col-ms-6">
+                    <p>Address</p>
+                    <input type="text" class="form-control" id="address" name="address" th:field="*{address}">
+                </div>
+            </div>
+        </div>
+        <div class="btn-edit">
+            <button class="btn btn-outline-success" type="submit" id="btnUpdateCustomer"><i class="fa-solid fa-pen-to-square"></i> Save changes</button>
+        </div>
+    </form>
+</div>
+<div class="footer">
+    <div id="message-alert">
+        <th:block th:if="${success} == true">
+            <div class="alert-success">
+                <h5><span>Cập nhật thành công</span></h5>
+            </div>
+        </th:block>
+        <th:block th:if="${error} == true">
+            <div class="alert-danger">
+                <h5>ERROR !!!</h5>
+                <ul>
+                    <li th:each="err : ${#fields.errors('customer.*')}" th:text="${err}"></li>
+                </ul>
+            </div>
+        </th:block>
+    </div>
+</div>
+</body>
+
+</html>
