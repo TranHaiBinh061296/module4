@@ -1,64 +1,41 @@
-h1 {
-    color: white;
-}
-
-.head {
-    padding: 10px;
-    background-color: #1baa09;
-}
-
-.head .btn {
-    float: right;
-    min-width: 50px;
-    outline: none !important;
-    margin-top: 10px;
-    margin-left: 10px;
-}
-
-#tb-customer thead{
-    background-color: #014d05;
-    color: white;
-    text-align: center;
-}
-
-.footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100vw;
-    height: 0;
-    padding-right: 50px;
-    color: #0f5132;
-}
-
 #message-alert {
     width: 100vw;
     position: fixed;
     bottom: 0;
 }
-
-.alert-success {
+.alert-danger {
     padding: 1rem 135px;
-    background-color: #a9e2c8;
 }
 
 .alert-danger {
-    padding: 1rem 135px;
-    background-color: #880d19;
-    color: #ffffff;
+    color: #842029;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+}
+label.error {
+    display: list-item;
+    margin-top: 5px;
+    color: #842029;
 }
 
-.alert-danger h5 {
-    margin-left: -18px;
+.btn-withdraw {
+    margin-top: 20px;
 }
-
-.alert-danger ul {
-    margin-left: -2rem;
+.btn-withdraw button:hover {
+    background-color: orange;
+    color: white;
 }
-
-input:read-only {
-    background-color: #b0b5be;
+.btn-transfer-money {
+    margin-top: 20px;
 }
-input:read-only:focus{
-    background-color: #b0b5be;
+.btn-transfer-money button:hover {
+    background-color: rgb(66, 66, 235);
+    color: white;
+}
+.btn-withdraw {
+    margin-top: 20px;
+}
+.btn-withdraw button:hover {
+    background-color: orange;
+    color: white;
 }

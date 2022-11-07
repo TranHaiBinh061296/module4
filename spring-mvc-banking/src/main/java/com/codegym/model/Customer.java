@@ -46,7 +46,11 @@ public class Customer extends BaseEntity {
     public Customer() {
     }
 
-    public Customer(Long id, String fullName, String email, String phone, String address, BigDecimal balance) {
+    public Customer(Long id, @NotEmpty String fullName,
+                    @NotEmpty  @Email String email,
+                    @NotEmpty String phone,
+                    @NotEmpty String address,
+                    BigDecimal balance) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
@@ -54,7 +58,6 @@ public class Customer extends BaseEntity {
         this.address = address;
         this.balance = balance;
     }
-
     public Long getId() {
         return id;
     }

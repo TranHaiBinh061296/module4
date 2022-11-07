@@ -1,30 +1,33 @@
 package com.codegym.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "withdraw")
-public class Withdraw extends BaseEntity{
+@Table(name = "withdraws")
+public class Withdraw  extends BaseEntity{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(targetEntity = Customer.class)
-    @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
-    private Customer customer;
+
 
     @Column(name = "transaction_amount", precision = 12, scale = 0, nullable = false)
-    @Min(0)
+    @DecimalMin(value = "1000.0",message = "Số tiền tối thiểu là 1000 VNĐ")
     private BigDecimal transactionAmount;
+
+    @ManyToOne
+    @JoinColumn(name = "c_id", referencedColumnName = "id", nullable = false)
+    private Customer customer;
 
     public Withdraw() {
     }
 
-    public Withdraw(Long id, Customer customer, BigDecimal transactionAmount) {
+    public Withdraw(Long id, BigDecimal transactionAmount, Customer customer) {
         this.id = id;
-        this.customer = customer;
         this.transactionAmount = transactionAmount;
+        this.customer = customer;
     }
 
     public Long getId() {
@@ -35,14 +38,6 @@ public class Withdraw extends BaseEntity{
         this.id = id;
     }
 
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
     public BigDecimal getTransactionAmount() {
         return transactionAmount;
     }
@@ -51,4 +46,11 @@ public class Withdraw extends BaseEntity{
         this.transactionAmount = transactionAmount;
     }
 
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customerId) {
+        this.customer = customerId;
+    }
 }

@@ -2,60 +2,10 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <th:block th:replace="layout/head :: head"/>
-  <title>Deposit Customer</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0 auto;
-    }
-
-    .form-edit {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .table-title {
-      background-color: rgb(84, 84, 229);
-      color: white;
-      padding: 16px 30px;
-      border-radius: 3px 3px 0 0;
-    }
-
-    .table-title .btn {
-      float: right;
-      outline: none;
-      min-width: 50px;
-      margin-top: 10px;
-      margin-left: 10px;
-      margin-right: 50px;
-    }
-
-    .table-title .btn:hover {
-      background-color: aqua;
-    }
-
-    .row p {
-      font-weight: bold;
-      margin: 10px 0;
-    }
-
-    .btn-deposit {
-      margin-top: 20px;
-    }
-
-    .btn-deposit button:hover {
-      background-color: green;
-      color: white;
-    }
-    input > readonly {
-      background-color: grey;
-    }
-  </style>
-
+  <th:block th:replace="/layout/head :: head"/>
+  <title>Deposit Money</title>
+  <link rel="stylesheet" href="/assets/css/deposit.css">
+</head>
 <body>
 <div class="container">
   <div class="table-title">
@@ -68,52 +18,48 @@
       </div>
     </div>
   </div>
-  <form id="frmDeposit" method="post" th:object="${deposit}">
+  <form method="post"  th:object="${deposit}">
     <div class="form-edit">
       <div class="row col-6">
         <div class="col-ms-6">
           <p>Customer ID</p>
-          <input class="form-control" readonly type="text" th:field="${customer.id}">
+          <input class="form-control" type="text" th:field="${customer.id}" readonly>
         </div>
         <div class="col-ms-6">
           <p>Current balance ($)</p>
-          <input class="form-control" type="text" readonly name="balance" th:value="${customer.getBalance()}">
+          <input class="form-control" type="number" th:field="${customer.balance}" readonly>
         </div>
       </div>
       <div class="row col-6">
         <div class="col-ms-6">
           <p>Full Name</p>
-          <input type="text" class="form-control" readonly th:field="${customer.fullName}">
+          <input class="form-control" type="text" th:field="${customer.fullName}" readonly>
         </div>
         <div class="col-ms-6">
           <p>Transaction Amount ($)</p>
-          <input type="number" class="form-control" th:field="*{transactionAmount}">
+          <input class="form-control" type="number" th:field="*{transactionAmount}">
+          <div>
+            <label class="error" th:if="${#fields.hasErrors('transactionAmount')}" th:errors="*{transactionAmount}"></label>
+          </div>
         </div>
       </div>
-
     </div>
     <div class="btn-deposit">
-      <button class="btn btn-outline-success" type="submit" id="btnDeposit"><i class="fa-solid fa-plus"></i>
-        Deposit
-      </button>
+      <button class="btn btn-outline-success" type="text"><i class="fa-solid fa-plus"></i> Deposit</button>
     </div>
   </form>
-
-  <div class="footer">
-    <div id="message-alert">
-      <th:block th:if="${success} ">
-        <div class="alert-success">
-          <h5 th:text="${success}"></h5>
-        </div>
-      </th:block>
-      <th:block th:if="${error}">
-        <div class="alert-danger">
-          <h5 th:text="${error}"></h5>
-        </div>
-      </th:block>
-    </div>
-  </div>
 </div>
-</body>
 
+</div>
+<footer>
+  <div id="message-alert">
+    <th:block th:if="${error}">
+      <div class="alert-danger">
+        <label class="error" th:text="${error}"></label>
+      </div>
+    </th:block>
+
+  </div>
+</footer>
+</body>
 </html>

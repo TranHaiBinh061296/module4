@@ -14,8 +14,7 @@ import java.util.List;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
-    Iterable<Customer> findAllByIdIsNot(Long id);
-
+    List<Customer> findAllByIdNot(Long senderId);
     @Modifying
     @Query("UPDATE Customer AS c " +
             "SET c.balance = c.balance + :balance " +
@@ -24,7 +23,8 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     @Modifying
     @Query("UPDATE Customer AS c " +
-            "SET c.balance = :balance " +
+            "SET c.balance = c.balance - :balance " +
             "WHERE c.id = :customerId")
-    void withdrawBalance(@Param("customerId") Long customerId, @Param("balance") BigDecimal balance);
+    void decreaseBalance(@Param("customerId") Long customerId, @Param("balance") BigDecimal balance);
+    List<Customer> findAllByDeletedIsFalse();
 }

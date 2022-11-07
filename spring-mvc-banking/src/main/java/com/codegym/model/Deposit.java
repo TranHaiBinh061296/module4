@@ -1,7 +1,7 @@
 package com.codegym.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 
 @Entity
@@ -14,10 +14,10 @@ public class Deposit extends BaseEntity{
 
 
     @Column(name = "transaction_amount", precision = 12, scale = 0, nullable = false)
-    @Min(value = 100, message = "Số tiền gửi")
+    @DecimalMin(value = "1000.0",message = "Số tiền tối thiểu là 1000 VNĐ")
     private BigDecimal transactionAmount;
 
-    @ManyToOne(targetEntity = Customer.class)
+    @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
     private Customer customer;
 

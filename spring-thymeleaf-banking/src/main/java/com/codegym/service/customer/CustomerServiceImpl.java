@@ -2,9 +2,11 @@ package com.codegym.service.customer;
 
 import com.codegym.model.Customer;
 import com.codegym.model.Deposit;
+import com.codegym.model.Transfer;
 import com.codegym.model.Withdraw;
 import com.codegym.repository.CustomerRepository;
 import com.codegym.repository.DepositRepository;
+import com.codegym.repository.TransferRepository;
 import com.codegym.repository.WithdrawRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,21 +19,21 @@ import java.util.Optional;
 @Service
 @Transactional
 public class CustomerServiceImpl implements ICustomerService {
+
     @Autowired
     private CustomerRepository customerRepository;
+
     @Autowired
     private DepositRepository depositRepository;
     @Autowired
     private WithdrawRepository withdrawRepository;
+    @Autowired
+    private TransferRepository transferRepository;
     @Override
     public List<Customer> findAll() {
         return customerRepository.findAll();
     }
 
-    @Override
-    public List<Customer> findAllByFullNameLikeOrEmailOrPhoneOrAddressLike(String valueSearch) {
-        return customerRepository.findAllByFullNameLikeOrEmailOrPhoneOrAddressLike(valueSearch, valueSearch, valueSearch, valueSearch);
-    }
 
     @Override
     public Customer getById(Long id) {
@@ -42,9 +44,15 @@ public class CustomerServiceImpl implements ICustomerService {
     public Optional<Customer> findById(Long id) {
         return customerRepository.findById(id);
     }
+
     @Override
-    public List<Customer> findAllByDeletedIsFalse() {
-        return customerRepository.findAllByDeletedIsFalse();
+    public Customer save(Customer customer) {
+        return customerRepository.save(customer);
+    }
+
+    @Override
+    public void remove(Long id) {
+
     }
 
     @Override
@@ -53,45 +61,37 @@ public class CustomerServiceImpl implements ICustomerService {
         deposit.setCustomer(customer);
         depositRepository.save(deposit);
 
-        BigDecimal currentBalance = customer.getBalance();
-        BigDecimal transactionAmount = deposit.getTransactionAmount();
-        BigDecimal newBalance = currentBalance.add(transactionAmount);
-        customerRepository.setBalance(customer.getId(), newBalance);
+        BigDecimal newBalance = deposit.getTransactionAmount();
+        customerRepository.incrementBalance(customer.getId(), newBalance);
     }
 
     @Override
-    public boolean withdraw(Withdraw withdraw, Customer customer) {
-        BigDecimal currentBalance = customer.getBalance();
-        BigDecimal transactionAmount = withdraw.getTransactionAmount();
-        BigDecimal newBalance = currentBalance.subtract(transactionAmount);
-        BigDecimal big0 = new BigDecimal(0);
-        if(newBalance.compareTo(big0)<0){
-            return false;
-        }
-        customerRepository.setBalance(customer.getId(),newBalance);
-
+    public void withdraw(Withdraw withdraw, Customer customer) {
         withdraw.setId(0L);
         withdraw.setCustomer(customer);
         withdrawRepository.save(withdraw);
-        return true;
+
+        BigDecimal newBalance = withdraw.getTransactionAmount();
+        customerRepository.decreaseBalance(customer.getId(), newBalance);
     }
 
     @Override
-    public Boolean existsByIdEquals(long id) {
-        return customerRepository.existsById(id);
-    }
-    @Override
-    public Customer save(Customer customer) {
-        return customerRepository.save(customer);
+    public List<Customer> findAllByIdNot(Long senderId) {
+        return customerRepository.findAllByIdNot(senderId);
     }
 
     @Override
-    public Iterable<Customer> findAllByIdNot(Long id) {
-        return customerRepository.findAllByIdIsNot(id);
+    public void transfer(Transfer transfer) {
+        Customer sender = transfer.getSender();
+
+        customerRepository.decreaseBalance(transfer.getSender().getId(),transfer.getTransactionAmount());
+
+        customerRepository.incrementBalance(transfer.getRecipient().getId(),transfer.getTransferAmount());
+
+        transferRepository.save(transfer);
     }
-
     @Override
-    public void remove(Long id) {
-
+    public List<Customer> findAllByDeletedIsFalse() {
+        return customerRepository.findAllByDeletedIsFalse();
     }
 }

@@ -3,7 +3,7 @@
 
 <head>
     <th:block th:replace="/layout/head :: head"/>
-    <title>Create Customer</title>
+    <title>Suspend Customer</title>
     <link rel="stylesheet" href="/assets/css/create.css">
 </head>
 
@@ -12,7 +12,7 @@
     <div class="table-title">
         <div class="row">
             <div class="col-sm-5">
-                <h1>Create Customer</h1>
+                <h1>Suspension of customers</h1>
             </div>
             <div class="col-sm-7 btn-a">
                 <a class="btn btn-outline-light" href="/customers"><i class="fa fa-list"></i> List of customers
@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <form method="post" action="/customers/create" th:object="${customer}">
+    <form method="post"  th:object="${customer}">
         <div class="form-create">
             <div class="row col-6">
                 <div class="col-ms-6">
@@ -57,22 +57,22 @@
             </div>
         </div>
         <div class="btn-action">
-            <button class="btn btn-outline-primary" type="text">
-                <i class="fa-solid fa-plus"></i> Create customer
-            </button>
+            <div class="btn-suspended">
+                <button class="btn btn-outline-danger" type="text"><i class="fa fa-ban"></i> Suspendes</button>
+            </div>
         </div>
     </form>
+    <footer>
+        <div id="message-alert">
+            <th:block th:if="${error}">
+                <div class="alert-danger">
+                    <label class="error" th:text="${error}"></label>
+                </div>
+            </th:block>
 
+        </div>
+    </footer>
 </div>
-<footer>
-    <div id="message-alert">
-        <th:block th:if="${error}">
-            <div class="alert-danger">
-                <label class="error" th:text="${error}"></label>
-            </div>
-        </th:block>
 
-    </div>
-</footer>
 </body>
 </html>

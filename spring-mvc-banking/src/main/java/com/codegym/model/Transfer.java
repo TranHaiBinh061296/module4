@@ -1,57 +1,58 @@
 package com.codegym.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.DecimalMin;
+
 import java.math.BigDecimal;
+
 
 @Entity
 @Table(name = "transfers")
-public class Transfer extends BaseEntity{
+public class Transfer extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
-    @ManyToOne(targetEntity = Customer.class)
+    @ManyToOne
     @JoinColumn(name = "sender_id", referencedColumnName = "id", nullable = false)
     private Customer sender;
 
-    @Min(0)
-    @Column(name = "transaction_amount", precision = 12, scale = 0, nullable = false)
-    private BigDecimal transactionAmount;
+    @ManyToOne
+    @JoinColumn(name = "recipient_id", referencedColumnName = "id", nullable = false)
+    private Customer recipient;
 
-    @Min(0)
-    private int fees;
+    @Column(name = "transfer_amount", precision = 12, scale = 0, nullable = false)
+    @DecimalMin(value = "1000.0",message = "Số tiền tối thiểu là 1000 VNĐ")
+    private BigDecimal transferAmount;
 
-    @Min(value = 50000, message = "Số tiền muốn chuyển phải lớn hơn 50.000 vnd")
+    @Column(nullable = false)
+    private long fees;
+
     @Column(name = "fees_amount", precision = 12, scale = 0, nullable = false)
     private BigDecimal feesAmount;
 
-    @Min(0)
-    @Column(name = "transfer_amount", precision = 12, scale = 0, nullable = false)
-    private BigDecimal transferAmount;
-
-    @ManyToOne(targetEntity = Customer.class)
-    @JoinColumn(name = "recipient_id", referencedColumnName = "id", nullable = false)
-    private Customer recipient;
+    @Column(name = "transaction_amount", precision = 12, scale = 0, nullable = false)
+    private BigDecimal transactionAmount;
 
     public Transfer() {
     }
 
-    public Transfer(Long id, Customer sender, BigDecimal transactionAmount, int fees, BigDecimal feesAmount, BigDecimal transferAmount, Customer recipient) {
+    public Transfer(long id, Customer sender, Customer recipient, BigDecimal transferAmount, long fees, BigDecimal feesAmount, BigDecimal transactionAmount) {
         this.id = id;
         this.sender = sender;
-        this.transactionAmount = transactionAmount;
+        this.recipient = recipient;
+        this.transferAmount = transferAmount;
         this.fees = fees;
         this.feesAmount = feesAmount;
-        this.transferAmount = transferAmount;
-        this.recipient = recipient;
+        this.transactionAmount = transactionAmount;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -63,19 +64,27 @@ public class Transfer extends BaseEntity{
         this.sender = sender;
     }
 
-    public BigDecimal getTransactionAmount() {
-        return transactionAmount;
+    public Customer getRecipient() {
+        return recipient;
     }
 
-    public void setTransactionAmount(BigDecimal transactionAmount) {
-        this.transactionAmount = transactionAmount;
+    public void setRecipient(Customer recipient) {
+        this.recipient = recipient;
     }
 
-    public int getFees() {
+    public BigDecimal getTransferAmount() {
+        return transferAmount;
+    }
+
+    public void setTransferAmount(BigDecimal transferAmount) {
+        this.transferAmount = transferAmount;
+    }
+
+    public long getFees() {
         return fees;
     }
 
-    public void setFees(int fees) {
+    public void setFees(long fees) {
         this.fees = fees;
     }
 
@@ -87,32 +96,12 @@ public class Transfer extends BaseEntity{
         this.feesAmount = feesAmount;
     }
 
-    public BigDecimal getTransferAmount() {
-        return transferAmount;
+    public BigDecimal getTransactionAmount() {
+        return transactionAmount;
     }
 
-    public void setTransferAmount(BigDecimal transferAmount) {
-        this.transferAmount = transferAmount;
+    public void setTransactionAmount(BigDecimal transactionAmount) {
+        this.transactionAmount = transactionAmount;
     }
 
-    public Customer getRecipient() {
-        return recipient;
-    }
-
-    public void setRecipient(Customer recipient) {
-        this.recipient = recipient;
-    }
-
-    @Override
-    public String toString() {
-        return "Transfer{" +
-                "id=" + id +
-                ", sender=" + sender +
-                ", transactionAmount=" + transactionAmount +
-                ", fees=" + fees +
-                ", feesAmount=" + feesAmount +
-                ", transferAmount=" + transferAmount +
-                ", recipient=" + recipient +
-                '}';
-    }
 }

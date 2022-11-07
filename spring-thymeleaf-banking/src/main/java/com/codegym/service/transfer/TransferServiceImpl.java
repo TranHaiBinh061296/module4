@@ -4,15 +4,19 @@ import com.codegym.model.Transfer;
 import com.codegym.repository.TransferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class TransferServiceImpl implements ITransferService{
+@Transactional
+public class TransferServiceImpl implements ITransferService {
+
     @Autowired
     private TransferRepository transferRepository;
+
 
     @Override
     public List<Transfer> findAll() {
@@ -26,7 +30,7 @@ public class TransferServiceImpl implements ITransferService{
 
     @Override
     public Optional<Transfer> findById(Long id) {
-        return Optional.empty();
+        return transferRepository.findById(id);
     }
 
     @Override
@@ -35,12 +39,12 @@ public class TransferServiceImpl implements ITransferService{
     }
 
     @Override
-    public BigDecimal getSumFeesAmount() {
-        return transferRepository.getSumFeesAmount();
+    public void remove(Long id) {
+
     }
 
     @Override
-    public void remove(Long id) {
-
+    public BigDecimal getSumFeesAmount() {
+        return null;
     }
 }

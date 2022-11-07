@@ -9,13 +9,12 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.List;
+
+
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
-    List<Customer> findAllByFullNameLikeOrEmailOrPhoneOrAddressLike(String fullName, String email,String phone, String address);
-    Iterable<Customer> findAllByIdIsNot(Long id);
 
-    List<Customer> findAllByDeletedIsFalse();
-
+    List<Customer> findAllByIdNot(Long senderId);
     @Modifying
     @Query("UPDATE Customer AS c " +
             "SET c.balance = c.balance + :balance " +
@@ -24,7 +23,8 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     @Modifying
     @Query("UPDATE Customer AS c " +
-            "SET c.balance = :balance " +
+            "SET c.balance = c.balance - :balance " +
             "WHERE c.id = :customerId")
-    void setBalance(@Param("customerId") Long customerId, @Param("balance") BigDecimal balance);
+    void decreaseBalance(@Param("customerId") Long customerId, @Param("balance") BigDecimal balance);
+    List<Customer> findAllByDeletedIsFalse();
 }
