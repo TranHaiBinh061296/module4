@@ -178,7 +178,7 @@ public class HomeController {
             customerService.save(customer);
 
             modelAndView =  new ModelAndView("redirect:/customers");
-            redirectAttributes.addFlashAttribute("message","Tạo mới thành công!!!");
+            redirectAttributes.addFlashAttribute("success",true);
         }
 
         return modelAndView;

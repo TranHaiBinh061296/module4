@@ -70,7 +70,11 @@
                 <label class="error" th:text="${error}"></label>
             </div>
         </th:block>
-
+        <th:block th:if="${success} == true">
+            <div class="alert-success">
+                <h5><span>Thêm mới khách hàng thành công</span></h5>
+            </div>
+        </th:block>
     </div>
 </footer>
 </body>
