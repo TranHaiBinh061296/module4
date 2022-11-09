@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Deposit</title>
+
+    <th:block th:replace="/layout/head :: head" />
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="row">
+            <div class="col-sm-5">
+                <h1>Deposit</h1>
+            </div>
+            <div class="col-sm-7">
+                <a href="/customers" class="btn btn-outline-light">
+                    <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                    <span>List of Customers</span>
+                </a>
+                <a href="/transfers" class="btn btn-outline-light">
+                    <i class="fa fa-history" aria-hidden="true"></i>
+                    <span>Transfer money Information</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="content">
+        <form id="frmDeposit" method="post" th:object="${deposit}">
+            <fieldset class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Full name</label>
+                    <input type="text" class="form-control" th:field="${customer.fullName}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Transaction Amount</label>
+                    <input type="number" class="form-control" th:field="*{transactionAmount}">
+                </div>
+                <div class="col-md-12">
+                    <button type="submit" id="btnDeposit" class="btn btn-outline-success">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        Deposit
+                    </button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+    <footer>
+        <div id="message-alert">
+            <th:block th:if="${error}">
+                <div class="alert-danger">
+                    <label class="error" th:text="${error}"></label>
+                </div>
+            </th:block>
+
+            <th:block th:if="${errors == true}">
+                <div class="alert-danger">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('deposit.*')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+            </th:block>
+
+            <th:block th:if="${success}">
+                <div class="alert-success message-success">
+                    <label th:text="${success}"></label>
+                </div>
+            </th:block>
+        </div>
+    </footer>
+</div>
+
+</body>
+</html>

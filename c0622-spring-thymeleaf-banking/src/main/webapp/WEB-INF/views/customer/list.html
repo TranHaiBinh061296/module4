@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+
+    <th:block th:replace="layout/head :: head" />
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="row">
+                <div class="col-sm-5">
+                    <h1>List of customers</h1>
+                </div>
+                <div class="col-sm-7">
+                    <a href="/customers/create" class="btn btn-outline-light"><i class="fa fa-plus-square-o" aria-hidden="true"></i> <span>Add New Customer</span></a>
+                    <a href="/transfers" class="btn btn-outline-light"><i class="fa fa-history" aria-hidden="true"></i> <span>Transfer money Information</span></a>
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+            <div>
+                <form action="/customers/search" method="get">
+                    <div class="row">
+                        <input type="text" name="keySearch" class="form-control">
+                        <button type="submit" class="btn btn-outline-primary">
+                            Search
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Balance</th>
+                        <th>Address</th>
+                        <th colspan="4">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <th:block th:each="item : ${customers}">
+                        <tr>
+                            <td th:text="${item.id}"></td>
+                            <td th:text="${item.fullName}"></td>
+                            <td th:text="${item.email}"></td>
+                            <td th:text="${item.phone}"></td>
+                            <td th:text="${item.balance}"></td>
+                            <td th:text="${item.address}"></td>
+                            <td>
+                                <a th:href="@{'/customers/update/'+${item.id}}">
+                                    <button class="btn btn-outline-secondary">
+                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                        Update
+                                    </button>
+                                </a>
+                            </td>
+                            <td>
+                                <a th:href="@{'/customers/deposit/'+${item.id}}">
+                                    <button class="btn btn-outline-success">
+                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                        Deposit
+                                    </button>
+                                </a>
+                            </td>
+                            <td>
+                                <a th:href="@{'/customers/transfer/'+${item.id}}">
+                                    <button class="btn btn-outline-primary">
+                                        <i class="fa fa-exchange" aria-hidden="true"></i>
+                                        Transfer
+                                    </button>
+                                </a>
+                            </td>
+                            <td>
+                                <a th:href="@{'/customers/delete/'+${item.id}}">
+                                    <button class="btn btn-outline-danger">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                        Delete
+                                    </button>
+                                </a>
+                            </td>
+                        </tr>
+                    </th:block>
+                </tbody>
+            </table>
+        </div>
+
+        <footer id="footer">
+            <th:block th:if="${success}">
+                <div class="alert-success message-success">
+                    <label th:text="${success}"></label>
+                </div>
+                <script th:inline="javascript">
+                    setTimeout(() => {
+                        document.getElementById("footer").innerHTML = "";
+                    }, 3000);
+                </script>
+            </th:block>
+        </footer>
+    </div>
+
+    <th:block th:replace="layout/script :: script" />
+
+</body>
+</html>

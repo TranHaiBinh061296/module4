@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Transfer</title>
+
+    <th:block th:replace="/layout/head :: head" />
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="row">
+            <div class="col-sm-5">
+                <h1>Transfer</h1>
+            </div>
+            <div class="col-sm-7">
+                <a href="/customers" class="btn btn-outline-light">
+                    <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                    <span>List of Customers</span>
+                </a>
+                <a href="/transfers" class="btn btn-outline-light">
+                    <i class="fa fa-history" aria-hidden="true"></i>
+                    <span>Transfer money Information</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="content">
+        <form id="frmTransfer" method="post" th:object="${transfer}">
+            <fieldset class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Sender ID</label>
+                    <input type="text" class="form-control" th:field="${sender.id}" readonly>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Sender Name</label>
+                    <input type="text" class="form-control" th:field="${sender.fullName}" readonly>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Sender Email</label>
+                    <input type="text" class="form-control" th:field="${sender.email}" readonly>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Sender Balance</label>
+                    <input type="text" class="form-control" th:field="${sender.balance}" readonly>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Recipient Name</label>
+                    <select name="recipientId" id="recipient" class="form-select">
+                        <th:block th:each="item : ${recipients}">
+                            <option th:value="${item.id}" th:text="'(' + ${item.id} + ') ' + ${item.fullName}"></option>
+                        </th:block>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Transfer Amount ($)</label>
+                    <input type="text" class="form-control" th:field="*{transferAmount}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Fees (%)</label>
+                    <input type="number" class="form-control" id="fees" value="10" readonly>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Total amount of transaction ($)</label>
+                    <input type="number" class="form-control" id="transactionAmount" readonly>
+                </div>
+
+                <div class="col-md-12">
+                    <button type="submit" id="btnTransfer" class="btn btn-outline-primary">
+                        <i class="fa fa-exchange" aria-hidden="true"></i>
+                        Transfer
+                    </button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+    <footer>
+        <div id="message-alert">
+            <th:block th:if="${error}">
+                <div class="alert-danger">
+                    <label class="error" th:text="${error}"></label>
+                </div>
+            </th:block>
+
+            <th:block th:if="${errors == true}">
+                <div class="alert-danger">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('transferDTO.*')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+            </th:block>
+
+            <th:block th:if="${success}">
+                <div class="alert-success message-success">
+                    <label th:text="${success}"></label>
+                </div>
+            </th:block>
+        </div>
+    </footer>
+</div>
+
+    <script>
+
+        window.onload = function() {
+            let transferAmount = document.getElementById("transferAmount");
+
+            transferAmount.addEventListener("input", () => {
+                let fees = 10;
+                let feesAmount = +transferAmount.value * fees / 100;
+                let transactionAmount = document.getElementById("transactionAmount");
+
+                console.log(transactionAmount);
+
+                transactionAmount.value = +transferAmount.value + feesAmount;
+            });
+        };
+
+    </script>
+
+</body>
+</html>
