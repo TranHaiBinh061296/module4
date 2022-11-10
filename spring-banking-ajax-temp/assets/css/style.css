@@ -90,3 +90,21 @@ label.error {
     margin-top: 5px;
     color: #842029;
 }
+
+.modal-header-create {
+    background-color: #49ab2b;
+    color: #fff;
+}
+
+.modal-header-update {
+    background-color: #17b4fb;
+    color: #fff;
+}
+
+.modal-alert-danger {
+    padding: 10px 35px;
+    margin-bottom: 15px;
+    color: #842029;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+}
