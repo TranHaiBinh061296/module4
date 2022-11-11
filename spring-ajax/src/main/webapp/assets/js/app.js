@@ -137,9 +137,9 @@
 // }
 
 class App {
-    static DOAMIN_SERVER = "http://localhost:3000";
-    static CUSTOMER_API = this.DOAMIN_SERVER + "/customers";
-    static DEPOSIT_API = this.DOAMIN_SERVER + "/deposits";
+    static DOAMIN_SERVER = "http://localhost:8080";
+    static CUSTOMER_API = this.DOAMIN_SERVER + "/api/customers";
+    static DEPOSIT_API = this.DOAMIN_SERVER + "/api/deposits";
     static WITHDRAW_API = this.DOAMIN_SERVER + "/withdraws";
     static TRANSFER_API = this.DOAMIN_SERVER + "/transfers";
 
@@ -157,7 +157,7 @@ class App {
         static ERROR_401 = "Unauthorized - Access Token của bạn hết hạn hoặc không hợp lệ.";
         static ERROR_403 = "Forbidden - Bạn không được quyền truy cập tài nguyên này.";
         static ERROR_404 = "Not Found - Tài nguyên này đã bị xóa hoặc không tồn tại";
-        static ERROR_500 = "Internal Server Error - Hệ thống Server đang có vấn đề hoặc không truy cập được.";
+        static ERROR_500 = "Hệ thống Server đang có vấn đề.";
 
     }
 
