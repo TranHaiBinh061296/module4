@@ -1,48 +1,42 @@
 package com.codegym.model;
 
-import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
+import com.codegym.model.dto.CustomerDTO;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
 import java.util.List;
 
-
 @Entity
 @Table(name = "customers")
-public class Customer extends BaseEntity implements Validator {
+public class Customer extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //    @NotEmpty(message = "Họ tên không được để trống")
+//    @NotEmpty(message = "Tên không được trống")
     @Column(name = "full_name", nullable = false)
     private String fullName;
-
-    //    @Pattern(regexp = "^[\\w]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Vui lòng nhập đúng định dạng email")
+//    @NotEmpty(message = "Email không được trống")
+//    @Email(message = "Email không đúng định dạng (vd:HieuCodeg@gmail.com")
     @Column(nullable = false, unique = true)
     private String email;
-
+//    @NotEmpty(message = "Phone không được trống")
     private String phone;
-
+//    @NotEmpty(message = "Địa chỉ không được trống")
     private String address;
-
 
     @Column(precision = 12, scale = 0, nullable = false, updatable = false)
     private BigDecimal balance;
-
 
     @OneToMany
     private List<Deposit> deposits;
 
     @OneToMany
-    private List<Transfer> senders;
-
-    @OneToMany
-    private List<Transfer> recipients;
+    private List<Withdraw> withdraws;
 
     public Customer() {
     }
@@ -54,6 +48,18 @@ public class Customer extends BaseEntity implements Validator {
         this.phone = phone;
         this.address = address;
         this.balance = balance;
+    }
+
+    public CustomerDTO toCustomerDTO() {
+
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setId(String.valueOf(id));
+        customerDTO.setFullName(fullName);
+        customerDTO.setEmail(email);
+        customerDTO.setPhone(phone);
+        customerDTO.setAddress(address);
+        customerDTO.setBalance(balance.toString());
+        return customerDTO;
     }
 
     public Long getId() {
@@ -117,23 +123,4 @@ public class Customer extends BaseEntity implements Validator {
     }
 
 
-    @Override
-    public boolean supports(Class<?> aClass) {
-        return Customer.class.isAssignableFrom(aClass);
-    }
-
-    @Override
-    public void validate(Object target, Errors errors) {
-        Customer customer = (Customer) target;
-
-        String fullName = customer.getFullName();
-
-        if (fullName.length() < 5){
-            errors.rejectValue("fullName", "fullName.length.min");
-        }
-
-        if (fullName.length() > 20){
-            errors.rejectValue("fullName", "fullName.length.max");
-        }
-    }
 }

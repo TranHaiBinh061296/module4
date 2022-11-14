@@ -23,7 +23,7 @@ public class Transfer extends BaseEntity {
     private Customer recipient;
 
     @Column(name = "transfer_amount", precision = 12, scale = 0, nullable = false)
-    @DecimalMin(value = "1000.0",message = "Số tiền tối thiểu là 1000 VNĐ")
+    @DecimalMin(value = "20000.0",message = "Số tiền tối thiểu là 20.000 VNĐ")
     private BigDecimal transferAmount;
 
     @Column(nullable = false)

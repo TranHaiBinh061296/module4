@@ -5,8 +5,8 @@ import javax.validation.constraints.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "deposits")
-public class Deposit extends BaseEntity{
+@Table(name = "withdraws")
+public class Withdraw  extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,13 +17,13 @@ public class Deposit extends BaseEntity{
     private BigDecimal transactionAmount;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "c_id", referencedColumnName = "id", nullable = false)
     private Customer customer;
 
-    public Deposit() {
+    public Withdraw() {
     }
 
-    public Deposit(Long id, BigDecimal transactionAmount, Customer customer) {
+    public Withdraw(Long id, BigDecimal transactionAmount, Customer customer) {
         this.id = id;
         this.transactionAmount = transactionAmount;
         this.customer = customer;
@@ -53,3 +53,4 @@ public class Deposit extends BaseEntity{
         this.customer = customerId;
     }
 }
+

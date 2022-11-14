@@ -15,28 +15,20 @@ import java.util.Optional;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
+    List<Customer> findAllByIdNot(Long senderId);
     Optional<Customer> findByEmail(String email);
-
     Optional<Customer> findByEmailAndIdIsNot(String email, Long id);
-
-
-    List<Customer> findAllByFullNameLikeOrEmailLike(String fullName, String email);
-
-
-    List<Customer> findAllByDeletedIsFalse();
-
-    List<Customer> findAllByDeletedIsFalseAndIdNot(Long id);
-
     @Modifying
     @Query("UPDATE Customer AS c " +
             "SET c.balance = c.balance + :balance " +
             "WHERE c.id = :customerId")
     void incrementBalance(@Param("customerId") Long customerId, @Param("balance") BigDecimal balance);
 
-
     @Modifying
     @Query("UPDATE Customer AS c " +
             "SET c.balance = c.balance - :balance " +
             "WHERE c.id = :customerId")
-    void reduceBalance(@Param("customerId") Long customerId, @Param("balance") BigDecimal balance);
+    void decreaseBalance(@Param("customerId") Long customerId, @Param("balance") BigDecimal balance);
+    List<Customer> findAllByDeletedIsFalse();
+
 }

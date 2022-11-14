@@ -140,8 +140,9 @@ class App {
     static DOAMIN_SERVER = "http://localhost:8080";
     static CUSTOMER_API = this.DOAMIN_SERVER + "/api/customers";
     static DEPOSIT_API = this.DOAMIN_SERVER + "/api/deposits";
-    static WITHDRAW_API = this.DOAMIN_SERVER + "/withdraws";
-    static TRANSFER_API = this.DOAMIN_SERVER + "/transfers";
+    static WITHDRAW_API = this.DOAMIN_SERVER + "/api/withdraws";
+    static TRANSFER_API = this.DOAMIN_SERVER + "/api/transfers";
+
 
 
 
@@ -182,23 +183,6 @@ class App {
                 timer : 2500
             })
         }
-    }
-    static renderRowTransferHistory(obj) {
-        let str = `
-            <tr id="tr_${obj.id}">
-                <td>${obj.id}</td>
-                <td>${obj.createdAt}</td>
-                <td>${obj.senderId}</td>
-                <td>${obj.senderName}</td>
-                <td>${obj.recipientId}</td>
-                <td>${obj.recipientName}</td>
-                <td class="text-end num-space">${obj.transferAmount}</td>
-                <td class="text-end num-space">${obj.fees}</td>
-                <td class="text-end num-space">${obj.feesAmount}</td>
-            </tr>
-        `;
-
-        return str;
     }
 }
 

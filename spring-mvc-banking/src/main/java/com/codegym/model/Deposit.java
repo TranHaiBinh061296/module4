@@ -14,7 +14,7 @@ public class Deposit extends BaseEntity{
 
 
     @Column(name = "transaction_amount", precision = 12, scale = 0, nullable = false)
-    @DecimalMin(value = "1000.0",message = "Số tiền tối thiểu là 1000 VNĐ")
+    @DecimalMin(value = "20000.0",message = "Số tiền tối thiểu là 20.000 VNĐ")
     private BigDecimal transactionAmount;
 
     @ManyToOne
