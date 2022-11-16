@@ -88,20 +88,28 @@
         </div>
     </div>
 </div>
+
 <!-- Modal Create Customer -->
 <th:block th:replace="customer/modalCreateCustomer :: modalCreateCustomer"/>
+
 <!-- Modal Update Customer -->
 <th:block th:replace="customer/modalUpdateCustomer :: modalUpdateCustomer"/>
+
 <!-- Modal Deposit Customer -->
 <th:block th:replace="customer/modalDepositCustomer :: modalDepositCustomer"/>
+
 <!-- Modal Withdraw Customer -->
 <th:block th:replace="customer/modalWithdrawCustomer :: modalWithdrawCustomer"/>
+
 <!-- Modal Transfer Customer -->
 <th:block th:replace="customer/modalTransferCustomer :: modalTransferCustomer"/>
 
+
 <th:block th:replace="layout/script :: script"/>
+
 <script src="/assets/js/app.js"></script>
 <script src="/assets/js/validate.js"></script>
+
 <script>
 
     const page = {
@@ -371,18 +379,19 @@
             this.defaultShowErrors();
         },
         submitHandler: function () {
-            customer.fullName = page.dialogs.elements.fullNameCre.val();
-            customer.email = page.dialogs.elements.emailCre.val();
-            customer.phone = page.dialogs.elements.phoneCre.val();
-            customer.address = page.dialogs.elements.addressCre.val();
-            customer.balance = 0;
-            customer.deleted = 0;
-            customer.id = null;
+
             page.commands.createCustomer(customer);
         }
     })
 
     page.commands.createCustomer = (obj) => {
+        customer.fullName = page.dialogs.elements.fullNameCre.val();
+        customer.email = page.dialogs.elements.emailCre.val();
+        customer.phone = page.dialogs.elements.phoneCre.val();
+        customer.address = page.dialogs.elements.addressCre.val();
+        customer.balance = 0;
+        customer.deleted = 0;
+        customer.id = null;
         $.ajax({
             headers: {
                 "accept": "application/json",
@@ -409,7 +418,7 @@
                 App.SweetAlert.showAlertError(App.AlertMessageVi.ERROR_400);
             })
     }
-    $("#frmCreateCustomer").validate().settings.ignore = "*";
+
 
     //end create//
 
@@ -486,16 +495,16 @@
             this.defaultShowErrors();
         },
         submitHandler: function () {
-            customer.id = page.dialogs.elements.customerIdUp.val();
-            customer.fullName = page.dialogs.elements.fullNameUp.val();
-            customer.email = page.dialogs.elements.emailUp.val();
-            customer.phone = page.dialogs.elements.phoneUp.val();
-            customer.address = page.dialogs.elements.addressUp.val();
             page.commands.doUpdateCustomer(customer);
         }
     })
 
     page.commands.doUpdateCustomer = (obj) => {
+        customer.id = page.dialogs.elements.customerIdUp.val();
+        customer.fullName = page.dialogs.elements.fullNameUp.val();
+        customer.email = page.dialogs.elements.emailUp.val();
+        customer.phone = page.dialogs.elements.phoneUp.val();
+        customer.address = page.dialogs.elements.addressUp.val();
         $.ajax({
             headers: {
                 "accept": "application/json",
@@ -526,7 +535,6 @@
                 console.error(error);
             })
     }
-    $("#frmUpdateCustomer").validate().settings.ignore = "*";
     //end update//
 
 
@@ -647,7 +655,8 @@
                 }
             })
     }
-    $("#frmDeposit").validate().settings.ignore = "*";
+
+    // $("#frmDeposit").validate().settings.ignore = "*";
 
     //end deposit//
 
@@ -769,7 +778,7 @@
                 console.error(error);
             })
     }
-    $("#frmWithdraw").validate().settings.ignore = "*";
+
     //end withdraw //
 
     //transfer //
@@ -963,7 +972,7 @@
         page.dialogs.elements.transactionAmountTransfer.val(transactionAmount);
     })
 
-    $("#frmTransfer").validate().settings.ignore = "*";
+
     //end transfer//
 
 

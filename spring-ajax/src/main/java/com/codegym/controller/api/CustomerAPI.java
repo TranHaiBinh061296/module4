@@ -12,7 +12,6 @@ import com.codegym.model.dto.TransferDTO;
 import com.codegym.model.dto.WithdrawDTO;
 import com.codegym.service.customer.ICustomerService;
 import com.codegym.utils.AppUtils;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

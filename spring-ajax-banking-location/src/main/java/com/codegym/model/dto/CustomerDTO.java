@@ -1,0 +1,58 @@
+package com.codegym.model.dto;
+
+import com.codegym.model.Customer;
+import com.codegym.model.LocationRegion;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.math.BigDecimal;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Accessors(chain = true)
+public class CustomerDTO {
+    private Long id;
+
+    @NotEmpty(message = "Tên khách hàng không được để trống")
+    @Size(min = 5, max = 50, message = "Họ tên có độ dài từ 5 -> 50 ký tự")
+    private String fullName;
+
+    @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,5}$", message = "Email không đúng định dạng (vd đúng :haibinh@gmail.com)")
+    @NotEmpty(message = "Vui lòng nhập email")
+    private String email;
+
+    @NotEmpty(message = "Vui lòng nhập số điện thoại")
+    private String phone;
+
+    @Pattern(regexp = "^\\d+$", message = "Số tiền gửi phải là số")
+    private String balance;
+
+    private LocationRegionDTO locationRegion;
+
+    public CustomerDTO(Long id, String fullName, String email, String phone, BigDecimal balance, LocationRegion locationRegion) {
+        this.id = id;
+        this.fullName = fullName;
+        this.email = email;
+        this.phone = phone;
+        this.balance = balance.toString();
+        this.locationRegion = locationRegion.toLocationRegionDTO();
+    }
+
+    public Customer toCustomer(){
+        return new Customer()
+                .setId(id)
+                .setFullName(fullName)
+                .setEmail(email)
+                .setPhone(phone)
+                .setBalance(new BigDecimal(Long.parseLong(balance)))
+                .setLocationRegion(locationRegion.toLocationRegion());
+    }
+}
