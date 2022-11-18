@@ -12,7 +12,6 @@ import org.springframework.validation.Validator;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

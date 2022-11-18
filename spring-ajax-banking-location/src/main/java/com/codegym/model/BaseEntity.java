@@ -11,7 +11,6 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import java.util.Date;
 
-
 @MappedSuperclass
 @Getter
 @Setter

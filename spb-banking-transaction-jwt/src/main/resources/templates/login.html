@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <title>LOGIN</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+          integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/css/login/login-style.css">
+
+</head>
+
+<body>
+<div class="container" id="container">
+    <div class="form-container sign-up-container">
+        <form >
+            <h1>Tạo tài khoản</h1>
+            <div class="social-container">
+                <a style="color: blue;" href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                <a style="color: rgb(118, 222, 43);" href="#" class="social"><i
+                        class="fab fa-google-plus-g"></i></a>
+                <a style="color: rgb(219, 187, 29);" href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+
+            <label for="role">Role group</label>
+            <select name="role" id="role">
+                <option value="1">Admin role</option>
+                <option value="3">User role</option>
+            </select>
+
+            <input id="fullName" type="text" placeholder="fullName" />
+            <input id="emailSignUp" type="text" placeholder="Email" />
+            <input id="passwordSignUp" type="password" placeholder="Password" />
+            <input id="confirmPasswordSignUp" type="password" placeholder="Confirm Password" />
+            <button id="btnSignUp" type="button" class="btn_signup">Đăng ký</button>
+        </form>
+    </div>
+
+
+
+
+    <div class="form-container sign-in-container">
+        <form action="#">
+            <h1>Đăng nhập</h1>
+            <div class="social-container">
+                <a style="color: blue;" href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                <a style="color: rgb(118, 222, 43);" href="#" class="social"><i
+                        class="fab fa-google-plus-g"></i></a>
+                <a style="color: rgb(219, 187, 29);" class="social"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <span>hoặc lấy tài khoản của bạn</span>
+            <input type="text" id="emailLogin" placeholder="Email" />
+            <input type="password" id="passwordLogin" placeholder="Password" />
+            <a href="#">Quên mật khẩu?</a>
+            <button id="btnLogin" class="btn_login">Đăng nhập</button>
+        </form>
+    </div>
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-left">
+                <h1>Chào mừng quý khách !</h1>
+                <p>Đăng nhập thông tin của quý khách</p>
+                <button class="ghost" id="signIn">Đăng nhập</button>
+            </div>
+            <div class="overlay-panel overlay-right">
+                <h1>Kính chào quý khách !</h1>
+                <p>Nhập thông tin của quý khách và bắt đầu sử dụng dịch vụ của chúng tôi!</p>
+                <button class="ghost"  id="signUp">Đăng ký</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <footer>
+    <p>
+        Được tạo <i class="fa fa-heart"></i> từ
+        <a target="_blank" href="https://florin-pop.com">Trần Hải Bình</a>
+        - Liên hệ
+        <a target="_blank" href="https://www.florin-pop.com/blog/2019/03/double-slider-sign-in-up-form/">tại
+            đây</a>.
+    </p>
+</footer> -->
+<script src="/assets/js/app.js">
+</script>
+<script src="/assets/jquery/v3.6.1/jquery-3.6.1.min.js"></script>
+<script src="/assets/jquery-validate/1.19.3/jquery.validate-1.19.3.min.js"></script>
+<script>
+    const page = {
+        urls: {
+            login: App.AUTH_URL + "/login",
+            register: App.AUTH_URL + "/register"
+        },
+        elements: {},
+        commands: {},
+        initializeEventControl: {}
+    }
+
+    page.elements.emailLogin = $("#emailLogin");
+    page.elements.passwordLogin = $("#passwordLogin");
+    page.elements.btnLogin = $("#btnLogin");
+
+    page.elements.emailSignUp = $("#emailSignUp");
+    page.elements.passwordSignUp = $("#passwordSignUp");
+    page.elements.confirmPasswordSignUp = $("#confirmPasswordSignUp");
+    page.elements.role = $("#role");
+    page.elements.btnSignUp = $("#btnSignUp");
+
+    page.commands.createSignUp = () => {
+        let user = {
+            "username": page.elements.emailSignUp.val(),
+            "password": page.elements.passwordSignUp.val(),
+            "role": {
+                "id": page.elements.role.val()
+            }
+        };
+        if ((page.elements.passwordSignUp.val()) == ((page.elements.confirmPasswordSignUp.val()))) {
+            $.ajax({
+                headers: {
+                    "accept": "application/json",
+                    "content-type": "application/json"
+                },
+                type: "POST",
+                url: page.urls.register,
+                data: JSON.stringify(user)
+            })
+                .done(() => {
+                    App.IziToast.showSuccessAlert("Đăng ký thành công!");
+                })
+                .fail(() => {
+                    App.IziToast.showErrorAlert("Lỗi!")
+                })
+        } else {
+            App.IziToast.showErrorAlert("Lỗi! Kiểm tra lại mật khẩu ")
+        }
+    }
+    const signUpButton = document.getElementById('signUp');
+    const signInButton = document.getElementById('signIn');
+    const container = document.getElementById('container');
+
+    signUpButton.addEventListener('click', () => {
+        container.classList.add("right-panel-active");
+    });
+
+    signInButton.addEventListener('click', () => {
+        container.classList.remove("right-panel-active");
+    });
+
+    page.commands.login = () => {
+        let user = {
+            "username": page.elements.emailLogin.val(),
+            "password": page.elements.passwordLogin.val()
+        }
+
+        $.ajax({
+            headers: {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            type: "POST",
+            url: page.urls.login,
+            data: JSON.stringify(user)
+        })
+            .done(() => {
+                App.IziToast.showSuccessAlert("Login successful");
+
+                setTimeout(() => {
+                    window.location.href = "/customers";
+                }, 500)
+            })
+            .fail(() => {
+                App.IziToast.showErrorAlert("Login fail");
+            })
+    }
+
+    page.initializeEventControl = () => {
+        page.elements.btnLogin.on("click", () => {
+            page.commands.login();
+        })
+        page.elements.btnSignUp.on("click", () => {
+            page.commands.createSignUp();
+        })
+    }
+
+
+    $(() => {
+        page.initializeEventControl();
+    })
+
+
+</script>
+</body>
+
+</html>

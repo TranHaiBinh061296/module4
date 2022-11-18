@@ -1,5 +1,6 @@
 package com.codegym.config;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
@@ -31,7 +32,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-
 @Configuration
 @EnableWebMvc
 @EnableTransactionManagement
@@ -41,14 +41,11 @@ import java.util.Properties;
 public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
 
     private ApplicationContext applicationContext;
-
-
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(@NotNull ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
 
-    // Thymeleaf Configuration
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
@@ -130,7 +127,7 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
     @Bean(name = "messageSource")
     public MessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasenames("validateMessage");
+        messageSource.setBasenames("validation-message");
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }

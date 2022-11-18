@@ -38,13 +38,13 @@ public class DepositDTO implements Validator {
         String transactionAmount = depositDTO.getTransactionAmount();
 
         if (transactionAmount != null && transactionAmount.length() > 0) {
-            if (transactionAmount.length() > 8){
-                errors.rejectValue("transactionAmount", "transactionAmount.max", "Số tiền chuyển khoản tối đa là 100.000.000 VNĐ");
+            if (transactionAmount.length() > 9){
+                errors.rejectValue("transactionAmount", "transactionAmount.max", "Số tiền chuyển khoản tối đa là 1.000.000.000 VNĐ");
                 return;
             }
 
-            if (transactionAmount.length() < 5){
-                errors.rejectValue("transactionAmount", "transactionAmount.min.length", "Số tiền chuyển khoản thấp nhất là 10.000 VNĐ");
+            if (transactionAmount.length() < 6){
+                errors.rejectValue("transactionAmount", "transactionAmount.min.length", "Số tiền chuyển khoản thấp nhất là 100.000 VNĐ");
                 return;
             }
 

@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
     @Query("SELECT NEW com.codegym.model.dto.CustomerDTO (" +

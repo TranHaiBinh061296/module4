@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,14 +18,13 @@ import javax.validation.constraints.*;
 public class TransferDTO implements Validator {
     private long id;
 
-    @NotEmpty(message = "Thông tin người gửi không được để trống")
+    @NotEmpty(message = "Thông tin người gửi là bắt buộc")
     @Pattern(regexp = "^\\d+$", message = "ID người gửi không hợp lệ")
     private String senderId;
 
     @NotEmpty(message = "Thông tin người nhận là bắt buộc")
     @Pattern(regexp = "^\\d+$", message = "ID người nhận không hợp lệ")
     private String recipientId;
-
 
     private String transferAmount;
 
@@ -40,12 +41,12 @@ public class TransferDTO implements Validator {
 
         if (transferAmount != null && transferAmount.length() > 0) {
             if (transferAmount.length() > 9){
-                errors.rejectValue("transferAmount", "transferAmount.max", "Số tiền chuyển khoản tối đa là 500.000.000");
+                errors.rejectValue("transferAmount", "transferAmount.max", "Số tiền chuyển khoản tối đa là 1.000.000.000 VNĐ");
                 return;
             }
 
             if (transferAmount.length() < 6){
-                errors.rejectValue("transactionAmount", "transactionAmount.min.length", "Số tiền chuyển khoản thấp nhất là 20.000 VNĐ");
+                errors.rejectValue("transactionAmount", "transactionAmount.min.length", "Số tiền chuyển khoản thấp nhất là 100.000 VNĐ");
                 return;
             }
 
@@ -59,7 +60,6 @@ public class TransferDTO implements Validator {
             if (transactionAmountFloat % 10 > 0) {
                 errors.rejectValue("transferAmount", "transferAmount.decimal", "Số tiền chuyển khoản phải là số chẵn chia hết cho 10");
             }
-
         } else {
             errors.rejectValue("transferAmount",  "transferAmount.null", "Số tiền chuyển khoản là bắt buộc");
         }

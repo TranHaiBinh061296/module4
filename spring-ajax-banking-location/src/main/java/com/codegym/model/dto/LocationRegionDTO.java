@@ -1,12 +1,13 @@
 package com.codegym.model.dto;
 
-
 import com.codegym.model.LocationRegion;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import javax.validation.constraints.NotEmpty;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,6 +22,7 @@ public class LocationRegionDTO {
     private String districtName;
     private String wardId;
     private String wardName;
+    @NotEmpty(message = "Vui lòng nhập địa chỉ")
     private String address;
 
     public LocationRegion toLocationRegion(){
