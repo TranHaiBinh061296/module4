@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<h5>
+  <a th:href="@{/create}">
+    Create new blog
+  </a>
+</h5>
+<th:block>
+  <form th:action="@{/blog/search}">
+    <input type="text" name="search">
+    <input type="submit" value="Search">
+  </form>
+</th:block>
+<h1>Blogs CODEGYM</h1>
+<table border="1">
+  <tr>
+    <th>#</th>
+    <th>Title</th>
+    <th>Content</th>
+    <th>Category</th>
+    <th>Edit</th>
+    <th>Delete</th>
+  </tr>
+
+  <th:block th:each="blog : ${blogs}">
+    <tr>
+      <td th:text="${blog.id}"></td>
+      <td th:text="${blog.title}"></td>
+      <td th:text="${blog.content}"></td>
+      <td th:if="${blog.category}" th:text="${blog.category.name}"></td>
+      <td th:unless="${blog.category}"></td>
+      <td>
+        <a th:href="@{/edit/__${blog.id}__ }">Edit</a>
+      </td>
+      <td>
+        <a th:href="@{/delete/__${blog.id}__}">Delete</a>
+      </td>
+    </tr>
+  </th:block>
+</table>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Blog</title>
+</head>
+<body>
+<h1>Edit Blog</h1>
+<h5>
+  <a th:href="@{/blog}">
+    Blog List
+  </a>
+</h5>
+<!--/*@thymesVar id="message" type="java"*/-->
+<th:block th:if="${message}">
+  <p th:text="${message}"></p>
+</th:block>
+<form th:action="@{/edit}" th:object="${blog}" method="post">
+  <input type="hidden" name="id" th:field="*{id}">
+  <table>
+    <tr>
+      <td>Title</td>
+      <td>Content</td>
+    </tr>
+    <tr>
+      <td>Title </td>
+      <td><input type="text" th:field="*{title}"></td>
+    </tr>
+
+    <tr>
+      <td>Content</td>
+      <td><input type="text" th:field="*{content}"></td>
+    </tr>
+
+    <tr>
+      <td>Category:</td>
+      <td>
+        <select name="category">
+          <option th:each="c : ${categories}"
+                  th:value="${c.id}"
+                  th:text="${c.name}"
+                  th:selected="(${blog.category}) and (${c.id} == *{category.id})">
+          </option>
+        </select>
+      </td>
+    </tr>
+
+    <tr>
+      <td></td>
+      <td><input type="submit" value="Update"></td>
+    </tr>
+  </table>
+</form>
+</body>
+</html>
