@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+  <meta charset="UTF-8">
+  <title>AccessDenied page</title>
+</head>
+<body>
+Dear <strong th:text="${user}"></strong>, Bạn không có quyền truy cập trang này
+<p><a th:href="@{/logout}">Logout</a></p>
+
+</body>
+</html>
