@@ -23,16 +23,15 @@
             </div>
 
             <label for="role">Role group</label>
-            <select name="role" id="role">
-                <option value="1">Admin role</option>
-                <option value="3">User role</option>
+            <select name="role" id="role" class="form-select">
+                <option value="1">ADMIN</option>
+                <option value="3">USER</option>
             </select>
 
-            <input id="fullName" type="text" placeholder="fullName" />
-            <input id="emailSignUp" type="text" placeholder="Email" />
-            <input id="passwordSignUp" type="password" placeholder="Password" />
-            <input id="confirmPasswordSignUp" type="password" placeholder="Confirm Password" />
-            <button id="btnSignUp" type="button" class="btn_signup">Đăng ký</button>
+            <input type="text" placeholder="Full Name" id="fullName" required autocomplete="off"/>
+            <input type="text" placeholder="User name" id="usernameReg"/>
+            <input type="password" placeholder="Password" id="passwordReg"/>
+            <button id="btnSignUp">Register</button>
         </form>
     </div>
 
@@ -49,10 +48,10 @@
                 <a style="color: rgb(219, 187, 29);" class="social"><i class="fab fa-linkedin-in"></i></a>
             </div>
             <span>hoặc lấy tài khoản của bạn</span>
-            <input type="text" id="emailLogin" placeholder="Email" />
-            <input type="password" id="passwordLogin" placeholder="Password" />
-            <a href="#">Quên mật khẩu?</a>
-            <button id="btnLogin" class="btn_login">Đăng nhập</button>
+            <input type="email" placeholder="User name" id="username"/>
+            <input type="password" placeholder="Password" id="password"/>
+            <a href="#">Forgot your password?</a>
+            <button id="btnLogin" type="button">Sign In</button>
         </form>
     </div>
     <div class="overlay-container">
@@ -60,12 +59,12 @@
             <div class="overlay-panel overlay-left">
                 <h1>Chào mừng quý khách !</h1>
                 <p>Đăng nhập thông tin của quý khách</p>
-                <button class="ghost" id="signIn">Đăng nhập</button>
+                <button class="ghost" id="signIn">Sign In</button>
             </div>
             <div class="overlay-panel overlay-right">
                 <h1>Kính chào quý khách !</h1>
                 <p>Nhập thông tin của quý khách và bắt đầu sử dụng dịch vụ của chúng tôi!</p>
-                <button class="ghost"  id="signUp">Đăng ký</button>
+                <button class="ghost" id="signUp">Register</button>
             </div>
         </div>
     </div>
@@ -79,59 +78,11 @@
             đây</a>.
     </p>
 </footer> -->
-<script src="/assets/js/app.js">
-</script>
+<script src="/assets/js/app.js"></script>
 <script src="/assets/jquery/v3.6.1/jquery-3.6.1.min.js"></script>
+
 <script src="/assets/jquery-validate/1.19.3/jquery.validate-1.19.3.min.js"></script>
 <script>
-    const page = {
-        urls: {
-            login: App.AUTH_URL + "/login",
-            register: App.AUTH_URL + "/register"
-        },
-        elements: {},
-        commands: {},
-        initializeEventControl: {}
-    }
-
-    page.elements.emailLogin = $("#emailLogin");
-    page.elements.passwordLogin = $("#passwordLogin");
-    page.elements.btnLogin = $("#btnLogin");
-
-    page.elements.emailSignUp = $("#emailSignUp");
-    page.elements.passwordSignUp = $("#passwordSignUp");
-    page.elements.confirmPasswordSignUp = $("#confirmPasswordSignUp");
-    page.elements.role = $("#role");
-    page.elements.btnSignUp = $("#btnSignUp");
-
-    page.commands.createSignUp = () => {
-        let user = {
-            "username": page.elements.emailSignUp.val(),
-            "password": page.elements.passwordSignUp.val(),
-            "role": {
-                "id": page.elements.role.val()
-            }
-        };
-        if ((page.elements.passwordSignUp.val()) == ((page.elements.confirmPasswordSignUp.val()))) {
-            $.ajax({
-                headers: {
-                    "accept": "application/json",
-                    "content-type": "application/json"
-                },
-                type: "POST",
-                url: page.urls.register,
-                data: JSON.stringify(user)
-            })
-                .done(() => {
-                    App.IziToast.showSuccessAlert("Đăng ký thành công!");
-                })
-                .fail(() => {
-                    App.IziToast.showErrorAlert("Lỗi!")
-                })
-        } else {
-            App.IziToast.showErrorAlert("Lỗi! Kiểm tra lại mật khẩu ")
-        }
-    }
     const signUpButton = document.getElementById('signUp');
     const signInButton = document.getElementById('signIn');
     const container = document.getElementById('container');
@@ -144,47 +95,82 @@
         container.classList.remove("right-panel-active");
     });
 
-    page.commands.login = () => {
+    let btnLogin = $('#btnLogin');
+    btnLogin.on('click', () => {
+
+        let username = $('#username').val();
+        let password = $('#password').val();
+
         let user = {
-            "username": page.elements.emailLogin.val(),
-            "password": page.elements.passwordLogin.val()
+            username: username,
+            password: password
         }
 
         $.ajax({
-            headers: {
+            "headers": {
                 "accept": "application/json",
                 "content-type": "application/json"
             },
-            type: "POST",
-            url: page.urls.login,
-            data: JSON.stringify(user)
+            "type": "POST",
+            "url": "http://localhost:8080/api/auth/login",
+            "data": JSON.stringify(user)
         })
-            .done(() => {
-                App.IziToast.showSuccessAlert("Login successful");
-
-                setTimeout(() => {
-                    window.location.href = "/customers";
-                }, 500)
+            .done((data) => {
+                // App.SweetAlert.showSuccessAlert("Đăng nhập thành công");
+                window.location.href = "/customers";
             })
-            .fail(() => {
-                App.IziToast.showErrorAlert("Login fail");
+            .fail((jqXHR) => {
+                // App.SweetAlert.showErrorAlert(jqXHR.responseJSON.message);
+                App.SweetAlert.showErrorAlert("Đăng nhập thất bại");
+
             })
-    }
-
-    page.initializeEventControl = () => {
-        page.elements.btnLogin.on("click", () => {
-            page.commands.login();
-        })
-        page.elements.btnSignUp.on("click", () => {
-            page.commands.createSignUp();
-        })
-    }
-
-
-    $(() => {
-        page.initializeEventControl();
     })
 
+    let btnSignUp = $('#btnSignUp')
+    btnSignUp.on('click', () => {
+        let fullName = $('#fullName').val();
+        let username = $('#usernameReg').val();
+        let password = $('#passwordReg').val();
+        let roleId = $('#role').val();
+        let roleCode = $("#role :selected").text()
+
+        let user = {
+            fullName: fullName,
+            username: username,
+            password: password,
+            role: {
+                id: roleId,
+                code: roleCode
+            }
+        }
+
+        $.ajax({
+            "headers": {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            "type": "POST",
+            "url": "http://localhost:8080/api/auth/register",
+            "data": JSON.stringify(user)
+        })
+            .done((data) => {
+                $('#username').val($('#usernameReg').val());
+                $('#password').val($('#passwordReg').val());
+                App.SweetAlert.showSuccessAlert('Đăng kí thành công');
+            })
+            .fail((jqXHR) => {
+                console.log(jqXHR);
+                if (jqXHR.responseJSON) {
+                    $.each(jqXHR.responseJSON, (key, item) => {
+                        App.SweetAlert.showErrorAlert(item);
+                        // App.SweetAlert.showSuccessAlert('Đăng kí thất bại');
+                    })
+                }
+
+            })
+    })
+
+</script>
 
 </script>
 </body>
