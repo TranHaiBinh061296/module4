@@ -6,7 +6,6 @@ import com.codegym.model.dto.*;
 import com.codegym.model.enums.FileType;
 import com.codegym.repository.*;
 import com.codegym.service.customerAvatar.ICustomerAvatarService;
-import com.codegym.service.locationRegion.ILocationRegionService;
 import com.codegym.upload.IUploadService;
 import com.codegym.utils.UploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,6 @@ public class CustomerServiceImpl implements ICustomerService {
 
     @Autowired
     private LocationRegionRepository locationRegionRepository;
-
 
     @Autowired
     private DepositRepository depositRepository;
@@ -55,14 +53,15 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     @Override
+    public List<CustomerAvatarDTO> getAllCustomerAvatarDTO() {
+        return customerAvatarService.getAllCustomerAvatarDTO();
+    }
+
+    @Override
     public List<Customer> findAll() {
         return customerRepository.findAll();
     }
 
-    @Override
-    public List<CustomerAvatarDTO> getAllCustomerAvatarDTO() {
-        return customerAvatarService.getAllCustomerAvatarDTO();
-    }
     @Override
     public Customer save(Customer customer) {
         locationRegionRepository.save(customer.getLocationRegion());
@@ -73,6 +72,7 @@ public class CustomerServiceImpl implements ICustomerService {
     public void remove(Long id) {
 
     }
+
     @Override
     public Customer getById(Long id) {
         return null;
@@ -104,7 +104,7 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     @Override
-    public Optional<CustomerDTO> getByEmailDTO(String email){
+    public Optional<CustomerDTO> getByEmailDTO(String email) {
         return customerRepository.getByEmailDTO(email);
     }
 
@@ -112,6 +112,7 @@ public class CustomerServiceImpl implements ICustomerService {
     public List<RecipientDTO> getAllRecipientDTO(long senderId) {
         return customerRepository.getAllRecipientDTO(senderId);
     }
+
     @Override
     public Customer deposit(Customer customer, Deposit deposit) {
         BigDecimal currentBalance = customer.getBalance();
@@ -165,11 +166,6 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     @Override
-    public CustomerAvatar saveWithAvatar(CustomerAvatarCreateDTO customerAvatarCreateDTO, LocationRegion locationRegion) {
-        return null;
-    }
-
-    @Override
     public CustomerAvatar createWithAvatar(CustomerAvatarCreateDTO customerAvatarCreateDTO, LocationRegion locationRegion) {
 
         locationRegion = locationRegionRepository.save(locationRegion);
@@ -190,27 +186,6 @@ public class CustomerServiceImpl implements ICustomerService {
         }
         return newCustomerAvatar;
     }
-    @Override
-    public CustomerAvatar saveWithAvatar(CustomerUpdateDTO customerUpdateDTO, MultipartFile file, LocationRegion locationRegion) {
-
-        locationRegion = locationRegionRepository.save(locationRegion);
-        Customer customer = customerUpdateDTO.toCustomer(locationRegion);
-        customer = customerRepository.save(customer);
-
-        String fileType = file.getContentType();
-        assert fileType != null;
-        fileType = fileType.substring(0, 5);
-
-        CustomerAvatar customerAvatar = new CustomerAvatar();
-        customerAvatar.setCustomer(customer).setFileType(fileType);
-        customerAvatar = customerAvatarService.save(customerAvatar);
-
-        CustomerAvatar newCustomerAvatar = new CustomerAvatar();
-        if (fileType.equals(FileType.IMAGE.getValue())) {
-            newCustomerAvatar = uploadAndSaveCustomerImage(file, customerAvatar, customer);
-        }
-        return newCustomerAvatar;
-    }
 
     private CustomerAvatar uploadAndSaveCustomerImage(MultipartFile file, CustomerAvatar customerAvatar, Customer customer) {
         try {
@@ -228,5 +203,30 @@ public class CustomerServiceImpl implements ICustomerService {
             e.printStackTrace();
             throw new DataInputException("Upload hình ảnh thất bại");
         }
+    }
+
+    @Override
+    public CustomerAvatar saveWithAvatar(CustomerUpdateDTO customerUpdateDTO, MultipartFile file, LocationRegion locationRegion) {
+
+        locationRegion = locationRegionRepository.save(locationRegion);
+        Customer customer = customerUpdateDTO.toCustomer(locationRegion);
+        customer = customerRepository.save(customer);
+
+        CustomerAvatar oldCustomerAvatar = customerAvatarService.getCustomerAvatarById(customer.getId()).toCustomerAvatar();
+        customerAvatarService.delete(oldCustomerAvatar.getId());
+
+        String fileType = file.getContentType();
+        assert fileType != null;
+        fileType = fileType.substring(0, 5);
+
+        CustomerAvatar customerAvatar = new CustomerAvatar();
+        customerAvatar.setCustomer(customer).setFileType(fileType);
+        customerAvatar = customerAvatarService.save(customerAvatar);
+
+        CustomerAvatar newCustomerAvatar = new CustomerAvatar();
+        if (fileType.equals(FileType.IMAGE.getValue())) {
+            newCustomerAvatar = uploadAndSaveCustomerImage(file, customerAvatar, customer);
+        }
+        return newCustomerAvatar;
     }
 }

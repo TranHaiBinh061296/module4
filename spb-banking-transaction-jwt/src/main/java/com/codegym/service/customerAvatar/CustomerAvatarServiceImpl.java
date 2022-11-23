@@ -40,6 +40,11 @@ public class CustomerAvatarServiceImpl implements ICustomerAvatarService {
     }
 
     @Override
+    public void delete(String id) {
+        customerAvatarRepository.deleteById(id);
+    }
+
+    @Override
     public List<CustomerAvatarDTO> getAllCustomerAvatarDTO() {
         return customerAvatarRepository.getAllCustomerAvatarDTO();
     }

@@ -13,12 +13,13 @@ public interface ICustomerService extends IGeneralService<Customer> {
 
 //    Customer save(Customer customer, LocationRegion locationRegion);
 
+    List<CustomerAvatarDTO> getAllCustomerAvatarDTO();
+
     void softDelete(long customerId);
 
     List<Customer> findAllByIdNot(long id);
 
     Optional<Customer> findByEmail(String email);
-    List<CustomerAvatarDTO> getAllCustomerAvatarDTO();
 
     Optional<Customer> findByEmailAndIdIsNot(String email, Long id);
 
@@ -31,7 +32,9 @@ public interface ICustomerService extends IGeneralService<Customer> {
     Customer withdraw(Customer customer, Withdraw withdraw);
 
     Customer transfer(Transfer transfer);
-    CustomerAvatar saveWithAvatar(CustomerAvatarCreateDTO customerAvatarCreateDTO, LocationRegion locationRegion);
+
     CustomerAvatar createWithAvatar(CustomerAvatarCreateDTO customerAvatarCreateDTO, LocationRegion locationRegion);
+
+
     CustomerAvatar saveWithAvatar(CustomerUpdateDTO customerUpdateDTO, MultipartFile file, LocationRegion locationRegion);
 }
