@@ -55,7 +55,7 @@
 
 	// Default settings
 	var defaults = {
-		id: null, 
+		id: null,
 		class: '',
 		title: '',
 		titleColor: '',
@@ -118,29 +118,29 @@
 	 * Polyfill for remove() method
 	 */
 	if(!('remove' in Element.prototype)) {
-	    Element.prototype.remove = function() {
-	        if(this.parentNode) {
-	            this.parentNode.removeChild(this);
-	        }
-	    };
+		Element.prototype.remove = function() {
+			if(this.parentNode) {
+				this.parentNode.removeChild(this);
+			}
+		};
 	}
 
 	/*
      * Polyfill for CustomEvent for IE >= 9
      * https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill
      */
-    if(typeof window.CustomEvent !== 'function') {
-        var CustomEventPolyfill = function (event, params) {
-            params = params || { bubbles: false, cancelable: false, detail: undefined };
-            var evt = document.createEvent('CustomEvent');
-            evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
-            return evt;
-        };
+	if(typeof window.CustomEvent !== 'function') {
+		var CustomEventPolyfill = function (event, params) {
+			params = params || { bubbles: false, cancelable: false, detail: undefined };
+			var evt = document.createEvent('CustomEvent');
+			evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+			return evt;
+		};
 
-        CustomEventPolyfill.prototype = window.Event.prototype;
+		CustomEventPolyfill.prototype = window.Event.prototype;
 
-        window.CustomEvent = CustomEventPolyfill;
-    }
+		window.CustomEvent = CustomEventPolyfill;
+	}
 
 	/**
 	 * A simple forEach() implementation for Arrays, Objects and NodeLists
@@ -227,11 +227,11 @@
 	 * @private
 	 */
 	var isBase64 = function(str) {
-	    try {
-	        return btoa(atob(str)) == str;
-	    } catch (err) {
-	        return false;
-	    }
+		try {
+			return btoa(atob(str)) == str;
+		} catch (err) {
+			return false;
+		}
 	};
 
 
@@ -240,33 +240,33 @@
 	 * @private
 	 */
 	var drag = function() {
-	    
-	    return {
-	        move: function(toast, instance, settings, xpos) {
 
-	        	var opacity,
-	        		opacityRange = 0.3,
-	        		distance = 180;
-	            
-	            if(xpos !== 0){
-	            	
-	            	toast.classList.add(PLUGIN_NAME+'-dragged');
+		return {
+			move: function(toast, instance, settings, xpos) {
 
-	            	toast.style.transform = 'translateX('+xpos + 'px)';
+				var opacity,
+					opacityRange = 0.3,
+					distance = 180;
 
-		            if(xpos > 0){
-		            	opacity = (distance-xpos) / distance;
-		            	if(opacity < opacityRange){
+				if(xpos !== 0){
+
+					toast.classList.add(PLUGIN_NAME+'-dragged');
+
+					toast.style.transform = 'translateX('+xpos + 'px)';
+
+					if(xpos > 0){
+						opacity = (distance-xpos) / distance;
+						if(opacity < opacityRange){
 							instance.hide(extend(settings, { transitionOut: 'fadeOutRight', transitionOutMobile: 'fadeOutRight' }), toast, 'drag');
 						}
-		            } else {
-		            	opacity = (distance+xpos) / distance;
-		            	if(opacity < opacityRange){
+					} else {
+						opacity = (distance+xpos) / distance;
+						if(opacity < opacityRange){
 							instance.hide(extend(settings, { transitionOut: 'fadeOutLeft', transitionOutMobile: 'fadeOutLeft' }), toast, 'drag');
 						}
-		            }
+					}
 					toast.style.opacity = opacity;
-			
+
 					if(opacity < opacityRange){
 
 						if(ISCHROME || ISFIREFOX)
@@ -274,19 +274,19 @@
 
 						toast.parentNode.style.opacity = opacityRange;
 
-		                this.stopMoving(toast, null);
+						this.stopMoving(toast, null);
 					}
-	            }
+				}
 
-				
-	        },
-	        startMoving: function(toast, instance, settings, e) {
 
-	            e = e || window.event;
-	            var posX = ((ACCEPTSTOUCH) ? e.touches[0].clientX : e.clientX),
-	                toastLeft = toast.style.transform.replace('px)', '');
-	                toastLeft = toastLeft.replace('translateX(', '');
-	            var offsetX = posX - toastLeft;
+			},
+			startMoving: function(toast, instance, settings, e) {
+
+				e = e || window.event;
+				var posX = ((ACCEPTSTOUCH) ? e.touches[0].clientX : e.clientX),
+					toastLeft = toast.style.transform.replace('px)', '');
+				toastLeft = toastLeft.replace('translateX(', '');
+				var offsetX = posX - toastLeft;
 
 				if(settings.transitionIn){
 					toast.classList.remove(settings.transitionIn);
@@ -296,48 +296,48 @@
 				}
 				toast.style.transition = '';
 
-	            if(ACCEPTSTOUCH) {
-	                document.ontouchmove = function(e) {
-	                    e.preventDefault();
-	                    e = e || window.event;
-	                    var posX = e.touches[0].clientX,
-	                        finalX = posX - offsetX;
-                        drag.move(toast, instance, settings, finalX);
-	                };
-	            } else {
-	                document.onmousemove = function(e) {
-	                    e.preventDefault();
-	                    e = e || window.event;
-	                    var posX = e.clientX,
-	                        finalX = posX - offsetX;
-                        drag.move(toast, instance, settings, finalX);
-	                };
-	            }
+				if(ACCEPTSTOUCH) {
+					document.ontouchmove = function(e) {
+						e.preventDefault();
+						e = e || window.event;
+						var posX = e.touches[0].clientX,
+							finalX = posX - offsetX;
+						drag.move(toast, instance, settings, finalX);
+					};
+				} else {
+					document.onmousemove = function(e) {
+						e.preventDefault();
+						e = e || window.event;
+						var posX = e.clientX,
+							finalX = posX - offsetX;
+						drag.move(toast, instance, settings, finalX);
+					};
+				}
 
-	        },
-	        stopMoving: function(toast, e) {
+			},
+			stopMoving: function(toast, e) {
 
-	            if(ACCEPTSTOUCH) {
-	                document.ontouchmove = function() {};
-	            } else {
-	            	document.onmousemove = function() {};
-	            }
+				if(ACCEPTSTOUCH) {
+					document.ontouchmove = function() {};
+				} else {
+					document.onmousemove = function() {};
+				}
 
 				toast.style.opacity = '';
 				toast.style.transform = '';
 
-	            if(toast.classList.contains(PLUGIN_NAME+'-dragged')){
-	            	
-	            	toast.classList.remove(PLUGIN_NAME+'-dragged');
+				if(toast.classList.contains(PLUGIN_NAME+'-dragged')){
+
+					toast.classList.remove(PLUGIN_NAME+'-dragged');
 
 					toast.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
 					setTimeout(function() {
 						toast.style.transition = '';
 					}, 400);
-	            }
+				}
 
-	        }
-	    };
+			}
+		};
 
 	}();
 
@@ -435,20 +435,20 @@
 			settings = extend(this.children[ref], options || {}),
 			$elem = $toast.querySelector('.'+PLUGIN_NAME+'-progressbar div');
 
-	    return {
-	        start: function() {
+		return {
+			start: function() {
 
-	        	if(typeof settings.time.REMAINING == 'undefined'){
+				if(typeof settings.time.REMAINING == 'undefined'){
 
-	        		$toast.classList.remove(PLUGIN_NAME+'-reseted');
+					$toast.classList.remove(PLUGIN_NAME+'-reseted');
 
-		        	if($elem !== null){
+					if($elem !== null){
 						$elem.style.transition = 'width '+ settings.timeout +'ms '+settings.progressBarEasing;
 						$elem.style.width = '0%';
 					}
 
-		        	settings.time.START = new Date().getTime();
-		        	settings.time.END = settings.time.START + settings.timeout;
+					settings.time.START = new Date().getTime();
+					settings.time.END = settings.time.START + settings.timeout;
 					settings.time.TIMER = setTimeout(function() {
 
 						clearTimeout(settings.time.TIMER);
@@ -462,15 +462,15 @@
 							}
 						}
 
-					}, settings.timeout);			
-		        	that.setSetting(ref, 'time', settings.time);
-	        	}
-	        },
-	        pause: function() {
+					}, settings.timeout);
+					that.setSetting(ref, 'time', settings.time);
+				}
+			},
+			pause: function() {
 
-	        	if(typeof settings.time.START !== 'undefined' && !$toast.classList.contains(PLUGIN_NAME+'-paused') && !$toast.classList.contains(PLUGIN_NAME+'-reseted')){
+				if(typeof settings.time.START !== 'undefined' && !$toast.classList.contains(PLUGIN_NAME+'-paused') && !$toast.classList.contains(PLUGIN_NAME+'-reseted')){
 
-        			$toast.classList.add(PLUGIN_NAME+'-paused');
+					$toast.classList.add(PLUGIN_NAME+'-paused');
 
 					settings.time.REMAINING = settings.time.END - new Date().getTime();
 
@@ -483,28 +483,28 @@
 							propertyWidth = computedStyle.getPropertyValue('width');
 
 						$elem.style.transition = 'none';
-						$elem.style.width = propertyWidth;					
+						$elem.style.width = propertyWidth;
 					}
 
 					if(typeof callback === 'function'){
 						setTimeout(function() {
-							callback.apply(that);						
+							callback.apply(that);
 						}, 10);
 					}
-        		}
-	        },
-	        resume: function() {
+				}
+			},
+			resume: function() {
 
 				if(typeof settings.time.REMAINING !== 'undefined'){
 
 					$toast.classList.remove(PLUGIN_NAME+'-paused');
 
-		        	if($elem !== null){
+					if($elem !== null){
 						$elem.style.transition = 'width '+ settings.time.REMAINING +'ms '+settings.progressBarEasing;
 						$elem.style.width = '0%';
 					}
 
-		        	settings.time.END = new Date().getTime() + settings.time.REMAINING;
+					settings.time.END = new Date().getTime() + settings.time.REMAINING;
 					settings.time.TIMER = setTimeout(function() {
 
 						clearTimeout(settings.time.TIMER);
@@ -525,8 +525,8 @@
 				} else {
 					this.start();
 				}
-	        },
-	        reset: function(){
+			},
+			reset: function(){
 
 				clearTimeout(settings.time.TIMER);
 
@@ -545,11 +545,11 @@
 
 				if(typeof callback === 'function'){
 					setTimeout(function() {
-						callback.apply(that);						
+						callback.apply(that);
 					}, 10);
 				}
-	        }
-	    };
+			}
+		};
 
 	};
 
@@ -563,11 +563,11 @@
 
 		if(typeof $toast != 'object'){
 			$toast = document.querySelector($toast);
-		}		
+		}
 
 		var that = this,
 			settings = extend(this.children[$toast.getAttribute('data-iziToast-ref')], options || {});
-			settings.closedBy = closedBy || null;
+		settings.closedBy = closedBy || null;
 
 		delete settings.time.REMAINING;
 
@@ -578,12 +578,12 @@
 
 			var $overlay = document.querySelector('.'+PLUGIN_NAME+'-overlay');
 			if($overlay !== null){
-				var refs = $overlay.getAttribute('data-iziToast-ref');		
-					refs = refs.split(',');
+				var refs = $overlay.getAttribute('data-iziToast-ref');
+				refs = refs.split(',');
 				var index = refs.indexOf(String(settings.ref));
 
 				if(index !== -1){
-					refs.splice(index, 1);			
+					refs.splice(index, 1);
 				}
 				$overlay.setAttribute('data-iziToast-ref', refs.join());
 
@@ -600,7 +600,7 @@
 
 		if(settings.transitionIn){
 			$toast.classList.remove(settings.transitionIn);
-		} 
+		}
 
 		if(settings.transitionInMobile){
 			$toast.classList.remove(settings.transitionInMobile);
@@ -614,9 +614,9 @@
 				$toast.classList.add(settings.transitionOut);
 		}
 		var H = $toast.parentNode.offsetHeight;
-				$toast.parentNode.style.height = H+'px';
-				$toast.style.pointerEvents = 'none';
-		
+		$toast.parentNode.style.height = H+'px';
+		$toast.style.pointerEvents = 'none';
+
 		if(!ISMOBILE || window.innerWidth > MOBILEWIDTH){
 			$toast.parentNode.style.transitionDelay = '0.2s';
 		}
@@ -629,12 +629,12 @@
 		}
 
 		setTimeout(function() {
-			
+
 			$toast.parentNode.style.height = '0px';
 			$toast.parentNode.style.overflow = '';
 
 			setTimeout(function(){
-				
+
 				delete that.children[settings.ref];
 
 				$toast.parentNode.remove();
@@ -670,8 +670,8 @@
 
 		// Merge user options with defaults
 		var settings = extend(CONFIG, options || {});
-			settings = extend(defaults, settings);
-			settings.time = {};
+		settings = extend(defaults, settings);
+		settings.time = {};
 
 		if(settings.id === null){
 			settings.id = generateId(settings.title+settings.message+settings.color);
@@ -768,7 +768,7 @@
 			}
 
 			if(settings.color) { //#, rgb, rgba, hsl
-				
+
 				if( isColor(settings.color) ){
 					$DOM.toast.style.background = settings.color;
 				} else {
@@ -779,7 +779,7 @@
 			if(settings.backgroundColor) {
 				$DOM.toast.style.background = settings.backgroundColor;
 				if(settings.balloon){
-					$DOM.toast.style.borderColor = settings.backgroundColor;				
+					$DOM.toast.style.borderColor = settings.backgroundColor;
 				}
 			}
 		})();
@@ -799,7 +799,7 @@
 				if(settings.rtl){
 					$DOM.toastBody.style.marginRight = (settings.imageWidth + 10) + 'px';
 				} else {
-					$DOM.toastBody.style.marginLeft = (settings.imageWidth + 10) + 'px';				
+					$DOM.toastBody.style.marginLeft = (settings.imageWidth + 10) + 'px';
 				}
 				$DOM.toast.appendChild($DOM.cover);
 			}
@@ -808,7 +808,7 @@
 		// Button close
 		(function(){
 			if(settings.close){
-				
+
 				$DOM.buttonClose = document.createElement('button');
 				$DOM.buttonClose.type = 'button';
 				$DOM.buttonClose.classList.add(PLUGIN_NAME + '-close');
@@ -841,7 +841,7 @@
 			if(settings.timeout) {
 
 				if(settings.pauseOnHover && !settings.resetOnHover){
-					
+
 					$DOM.toast.addEventListener('mouseenter', function (e) {
 						that.progress(settings, $DOM.toast).pause();
 					});
@@ -872,14 +872,14 @@
 
 			} else if(settings.icon) {
 				$DOM.icon.setAttribute('class', PLUGIN_NAME + '-icon ' + settings.icon);
-				
+
 				if(settings.iconText){
 					$DOM.icon.appendChild(document.createTextNode(settings.iconText));
 				}
-				
+
 				if(settings.iconColor){
 					$DOM.icon.style.color = settings.iconColor;
-				}				
+				}
 			}
 
 			if(settings.icon || settings.iconUrl) {
@@ -887,7 +887,7 @@
 				if(settings.rtl){
 					$DOM.toastBody.style.paddingRight = '33px';
 				} else {
-					$DOM.toastBody.style.paddingLeft = '33px';				
+					$DOM.toastBody.style.paddingLeft = '33px';
 				}
 
 				$DOM.toastBody.appendChild($DOM.icon);
@@ -941,7 +941,7 @@
 					}
 				}
 				if(settings.messageLineHeight) {
-					
+
 					if( !isNaN(settings.titleSize) ){
 						$DOM.p.style.lineHeight = settings.messageLineHeight+'px';
 					} else {
@@ -954,7 +954,7 @@
 				if(settings.rtl){
 					$DOM.strong.style.marginLeft = '10px';
 				} else if(settings.layout !== 2 && !settings.rtl) {
-					$DOM.strong.style.marginRight = '10px';	
+					$DOM.strong.style.marginRight = '10px';
 				}
 			}
 		})();
@@ -1045,11 +1045,11 @@
 				var H = $DOM.toast.offsetHeight;
 				var style = $DOM.toast.currentStyle || window.getComputedStyle($DOM.toast);
 				var marginTop = style.marginTop;
-					marginTop = marginTop.split('px');
-					marginTop = parseInt(marginTop[0]);
+				marginTop = marginTop.split('px');
+				marginTop = parseInt(marginTop[0]);
 				var marginBottom = style.marginBottom;
-					marginBottom = marginBottom.split('px');
-					marginBottom = parseInt(marginBottom[0]);
+				marginBottom = marginBottom.split('px');
+				marginBottom = parseInt(marginBottom[0]);
 
 				$DOM.toastCapsule.style.visibility = '';
 				$DOM.toastCapsule.style.height = (H+marginBottom+marginTop)+'px';
@@ -1159,14 +1159,14 @@
 				} else {
 					$DOM.overlay.removeEventListener('click', {});
 				}
-			}			
+			}
 		})();
 
 		// Inside animations
 		(function(){
 			if(settings.animateInside){
 				$DOM.toast.classList.add(PLUGIN_NAME+'-animateInside');
-			
+
 				var animationTimes = [200, 100, 300];
 				if(settings.transitionIn == 'bounceInLeft' || settings.transitionIn == 'bounceInRight'){
 					animationTimes = [400, 200, 400];
@@ -1247,24 +1247,24 @@
 
 			if(ACCEPTSTOUCH) {
 
-			    $DOM.toast.addEventListener('touchstart', function(e) {
-			        drag.startMoving(this, that, settings, e);
-			    }, false);
+				$DOM.toast.addEventListener('touchstart', function(e) {
+					drag.startMoving(this, that, settings, e);
+				}, false);
 
-			    $DOM.toast.addEventListener('touchend', function(e) {
-			        drag.stopMoving(this, e);
-			    }, false);
+				$DOM.toast.addEventListener('touchend', function(e) {
+					drag.stopMoving(this, e);
+				}, false);
 			} else {
 
-			    $DOM.toast.addEventListener('mousedown', function(e) {
-			    	e.preventDefault();
-			        drag.startMoving(this, that, settings, e);
-			    }, false);
+				$DOM.toast.addEventListener('mousedown', function(e) {
+					e.preventDefault();
+					drag.startMoving(this, that, settings, e);
+				}, false);
 
-			    $DOM.toast.addEventListener('mouseup', function(e) {
-			    	e.preventDefault();
-			        drag.stopMoving(this, e);
-			    }, false);
+				$DOM.toast.addEventListener('mouseup', function(e) {
+					e.preventDefault();
+					drag.stopMoving(this, e);
+				}, false);
 			}
 		}
 
@@ -1273,7 +1273,7 @@
 			document.addEventListener('keyup', function (evt) {
 				evt = evt || window.event;
 				if(evt.keyCode == 27) {
-				    that.hide(settings, $DOM.toast, 'esc');
+					that.hide(settings, $DOM.toast, 'esc');
 				}
 			});
 		}
@@ -1284,9 +1284,9 @@
 			});
 		}
 
-		that.toast = $DOM.toast;		
+		that.toast = $DOM.toast;
 	};
-	
+
 
 	return $iziToast;
 });

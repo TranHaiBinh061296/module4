@@ -51,7 +51,7 @@
             <input type="email" placeholder="User name" id="username"/>
             <input type="password" placeholder="Password" id="password"/>
             <a href="#">Forgot your password?</a>
-            <button id="btnLogin" type="button">Sign In</button>
+            <button id="btnLogin" type="button">Đăng nhập</button>
         </form>
     </div>
     <div class="overlay-container">
@@ -64,7 +64,7 @@
             <div class="overlay-panel overlay-right">
                 <h1>Kính chào quý khách !</h1>
                 <p>Nhập thông tin của quý khách và bắt đầu sử dụng dịch vụ của chúng tôi!</p>
-                <button class="ghost" id="signUp">Register</button>
+                <button class="ghost" id="signUp">Đăng ký</button>
             </div>
         </div>
     </div>
@@ -79,9 +79,7 @@
     </p>
 </footer> -->
 <script src="/assets/js/app.js"></script>
-<script src="/assets/jquery/v3.6.1/jquery-3.6.1.min.js"></script>
-
-<script src="/assets/jquery-validate/1.19.3/jquery.validate-1.19.3.min.js"></script>
+<th:block th:replace="layout/script :: script"/>
 <script>
     const signUpButton = document.getElementById('signUp');
     const signInButton = document.getElementById('signIn');
@@ -116,12 +114,14 @@
             "data": JSON.stringify(user)
         })
             .done((data) => {
-                // App.SweetAlert.showSuccessAlert("Đăng nhập thành công");
+
+                App.IziToast.showSuccessAlertLeft("Đăng nhập thành công!");
                 window.location.href = "/customers";
             })
             .fail((jqXHR) => {
                 // App.SweetAlert.showErrorAlert(jqXHR.responseJSON.message);
-                App.SweetAlert.showErrorAlert("Đăng nhập thất bại");
+                App.IziToast.showErrorAlertLeft("Đăng nhập thất bại!");
+
 
             })
     })
@@ -156,14 +156,14 @@
             .done((data) => {
                 $('#username').val($('#usernameReg').val());
                 $('#password').val($('#passwordReg').val());
-                App.SweetAlert.showSuccessAlert('Đăng kí thành công');
+                App.IziToast.showSuccessAlertLeft("Đăng kí thành công!");
             })
             .fail((jqXHR) => {
                 console.log(jqXHR);
                 if (jqXHR.responseJSON) {
                     $.each(jqXHR.responseJSON, (key, item) => {
-                        App.SweetAlert.showErrorAlert(item);
-                        // App.SweetAlert.showSuccessAlert('Đăng kí thất bại');
+                        // App.SweetAlert.showErrorAlert(item);
+                        App.IziToast.showErrorAlertLeft("Đăng kí thất bại!");
                     })
                 }
 

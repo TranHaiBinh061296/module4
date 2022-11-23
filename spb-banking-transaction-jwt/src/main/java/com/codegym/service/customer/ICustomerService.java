@@ -1,9 +1,9 @@
 package com.codegym.service.customer;
 
 import com.codegym.model.*;
-import com.codegym.model.dto.CustomerDTO;
-import com.codegym.model.dto.RecipientDTO;
+import com.codegym.model.dto.*;
 import com.codegym.service.IGeneralService;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +18,7 @@ public interface ICustomerService extends IGeneralService<Customer> {
     List<Customer> findAllByIdNot(long id);
 
     Optional<Customer> findByEmail(String email);
+    List<CustomerAvatarDTO> getAllCustomerAvatarDTO();
 
     Optional<Customer> findByEmailAndIdIsNot(String email, Long id);
 
@@ -30,5 +31,7 @@ public interface ICustomerService extends IGeneralService<Customer> {
     Customer withdraw(Customer customer, Withdraw withdraw);
 
     Customer transfer(Transfer transfer);
-
+    CustomerAvatar saveWithAvatar(CustomerAvatarCreateDTO customerAvatarCreateDTO, LocationRegion locationRegion);
+    CustomerAvatar createWithAvatar(CustomerAvatarCreateDTO customerAvatarCreateDTO, LocationRegion locationRegion);
+    CustomerAvatar saveWithAvatar(CustomerUpdateDTO customerUpdateDTO, MultipartFile file, LocationRegion locationRegion);
 }

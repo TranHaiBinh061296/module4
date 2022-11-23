@@ -8,6 +8,12 @@ class App {
     static AUTH_URL = this.DOMAIN_SERVER + "/api/auth";
     static ROLE_API = this.DOMAIN_SERVER + "/api/roles";
 
+    static CUSTOMER_AVATAR_URL = this.DOMAIN_SERVER + "/api/customer-avatars";
+
+    static BASE_URL_CLOUD_IMAGE = "https://res.cloudinary.com/docwqc9fw/image/upload";
+    static SCALE_IMAGE_W100_H80_Q100 = "c_limit,w_100,h_80,q_100";
+    static SCALE_IMAGE_W600_H650_Q100 = "c_limit,w_600,h_650,q_100";
+
 
     static SweetAlert = class {
         static showDeactivateConfirmDialog() {
@@ -58,16 +64,24 @@ class App {
     }
 
     static IziToast = class {
-        static showSuccessAlert(m) {
+        static showSuccessAlertLeft(m) {
             iziToast.success({
-                title: 'OK',
+                title: 'Success',
+                position: 'topRight',
+                timeout: 2500,
+                message: m
+            });
+        }
+        static showSuccessAlertRight(m) {
+            iziToast.success({
+                title: 'Success',
                 position: 'topRight',
                 timeout: 2500,
                 message: m
             });
         }
 
-        static showErrorAlert(m) {
+        static showErrorAlertLeft(m) {
             iziToast.error({
                 title: 'Error',
                 position: 'topRight',
@@ -75,6 +89,15 @@ class App {
                 message: m
             });
         }
+        static showErrorAlertRight(m) {
+            iziToast.error({
+                title: 'Error',
+                position: 'topRight',
+                timeout: 2500,
+                message: m
+            });
+        }
+
     }
 
     static Notify = class {
@@ -138,5 +161,17 @@ class Transfer {
         this.feesAmount = feesAmount;
         this.transactionAmount = transactionAmount;
         this.recipientId = recipientId;
+    }
+}
+class CustomerAvatar{
+    constructor(id, fileName, fileFolder, fileUrl, fileType, cloudId, ts, customer) {
+        this.id = id;
+        this.fileName = fileName;
+        this.fileFolder = fileFolder;
+        this.fileUrl = fileUrl;
+        this.fileType = fileType;
+        this.cloudId = cloudId;
+        this.ts = ts;
+        this.customer = customer;
     }
 }

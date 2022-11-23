@@ -2,9 +2,12 @@ package com.codegym.controller.api;
 
 import com.codegym.exception.DataInputException;
 import com.codegym.model.Customer;
+import com.codegym.model.CustomerAvatar;
 import com.codegym.model.Deposit;
+import com.codegym.model.dto.CustomerAvatarDTO;
 import com.codegym.model.dto.DepositDTO;
 import com.codegym.service.customer.ICustomerService;
+import com.codegym.service.customerAvatar.ICustomerAvatarService;
 import com.codegym.utils.AppUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +32,9 @@ public class DepositAPI {
     @Autowired
     private ICustomerService customerService;
 
+    @Autowired
+    private ICustomerAvatarService customerAvatarService;
+
     @PostMapping
     public ResponseEntity<?> deposit(@Validated @RequestBody DepositDTO depositDTO, BindingResult bindingResult) {
         new DepositDTO().validate(depositDTO, bindingResult);
@@ -47,7 +53,7 @@ public class DepositAPI {
         BigDecimal transactionAmount = new BigDecimal(depositDTO.getTransactionAmount());
         BigDecimal maxBalance = new BigDecimal(999999999999L);
         if (balance.add(transactionAmount).compareTo(maxBalance) > 0) {
-            throw new DataInputException("Số tiền thêm vào khiến tài khoản vượt quá ngưỡng cho phép. Bạn chỉ có thể nạp thêm " + maxBalance.subtract(balance) + " VNĐ");
+            throw new DataInputException("Số tiền thêm vào  vượt quá ngưỡng cho phép. Bạn chỉ có thể nạp thêm " + maxBalance.subtract(balance) + " VNĐ");
         }
 
         Deposit deposit = new Deposit();
@@ -55,6 +61,7 @@ public class DepositAPI {
         deposit.setCustomer(customerOptional.get());
 
         Customer newCustomer = customerService.deposit(customer, deposit);
-        return new ResponseEntity<>(newCustomer.toCustomerDTO(), HttpStatus.CREATED);
+        CustomerAvatarDTO customerAvatarDTO = customerAvatarService.getCustomerAvatarById(newCustomer.getId());
+        return new ResponseEntity<>(customerAvatarDTO, HttpStatus.CREATED);
     }
 }

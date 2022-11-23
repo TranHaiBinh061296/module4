@@ -23,7 +23,7 @@ public class UserLoginDTO {
     private String username;
 
     @NotBlank(message = "Vui lòng nhập mật khẩu")
-    @Size(max = 30, message = "Độ dài mật khẩu tối đa 30 ký tự")
+    @Size(max = 50, message = "Độ dài mật khẩu tối đa 50 ký tự")
     private String password;
 
     public UserLoginDTO(Long id, String username) {

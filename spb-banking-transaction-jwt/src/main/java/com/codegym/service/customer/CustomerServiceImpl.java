@@ -1,16 +1,23 @@
 package com.codegym.service.customer;
 
+import com.codegym.exception.DataInputException;
 import com.codegym.model.*;
-import com.codegym.model.dto.CustomerDTO;
-import com.codegym.model.dto.RecipientDTO;
+import com.codegym.model.dto.*;
+import com.codegym.model.enums.FileType;
 import com.codegym.repository.*;
+import com.codegym.service.customerAvatar.ICustomerAvatarService;
 import com.codegym.service.locationRegion.ILocationRegionService;
+import com.codegym.upload.IUploadService;
+import com.codegym.utils.UploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -32,6 +39,16 @@ public class CustomerServiceImpl implements ICustomerService {
     @Autowired
     private TransferRepository transferRepository;
 
+
+    @Autowired
+    private ICustomerAvatarService customerAvatarService;
+
+    @Autowired
+    private IUploadService uploadService;
+
+    @Autowired
+    private UploadUtil uploadUtil;
+
     @Override
     public List<CustomerDTO> getAllCustomerDTO() {
         return customerRepository.getAllCustomerDTO();
@@ -42,6 +59,10 @@ public class CustomerServiceImpl implements ICustomerService {
         return customerRepository.findAll();
     }
 
+    @Override
+    public List<CustomerAvatarDTO> getAllCustomerAvatarDTO() {
+        return customerAvatarService.getAllCustomerAvatarDTO();
+    }
     @Override
     public Customer save(Customer customer) {
         locationRegionRepository.save(customer.getLocationRegion());
@@ -141,5 +162,71 @@ public class CustomerServiceImpl implements ICustomerService {
         Optional<Customer> newSender = customerRepository.findById(transfer.getSender().getId());
 
         return newSender.get();
+    }
+
+    @Override
+    public CustomerAvatar saveWithAvatar(CustomerAvatarCreateDTO customerAvatarCreateDTO, LocationRegion locationRegion) {
+        return null;
+    }
+
+    @Override
+    public CustomerAvatar createWithAvatar(CustomerAvatarCreateDTO customerAvatarCreateDTO, LocationRegion locationRegion) {
+
+        locationRegion = locationRegionRepository.save(locationRegion);
+        Customer customer = customerAvatarCreateDTO.toCustomer(locationRegion);
+        customer = customerRepository.save(customer);
+
+        String fileType = customerAvatarCreateDTO.getFile().getContentType();
+        assert fileType != null;
+        fileType = fileType.substring(0, 5);
+
+        CustomerAvatar customerAvatar = new CustomerAvatar();
+        customerAvatar.setCustomer(customer).setFileType(fileType);
+        customerAvatar = customerAvatarService.save(customerAvatar);
+
+        CustomerAvatar newCustomerAvatar = new CustomerAvatar();
+        if (fileType.equals(FileType.IMAGE.getValue())) {
+            newCustomerAvatar = uploadAndSaveCustomerImage(customerAvatarCreateDTO.getFile(), customerAvatar, customer);
+        }
+        return newCustomerAvatar;
+    }
+    @Override
+    public CustomerAvatar saveWithAvatar(CustomerUpdateDTO customerUpdateDTO, MultipartFile file, LocationRegion locationRegion) {
+
+        locationRegion = locationRegionRepository.save(locationRegion);
+        Customer customer = customerUpdateDTO.toCustomer(locationRegion);
+        customer = customerRepository.save(customer);
+
+        String fileType = file.getContentType();
+        assert fileType != null;
+        fileType = fileType.substring(0, 5);
+
+        CustomerAvatar customerAvatar = new CustomerAvatar();
+        customerAvatar.setCustomer(customer).setFileType(fileType);
+        customerAvatar = customerAvatarService.save(customerAvatar);
+
+        CustomerAvatar newCustomerAvatar = new CustomerAvatar();
+        if (fileType.equals(FileType.IMAGE.getValue())) {
+            newCustomerAvatar = uploadAndSaveCustomerImage(file, customerAvatar, customer);
+        }
+        return newCustomerAvatar;
+    }
+
+    private CustomerAvatar uploadAndSaveCustomerImage(MultipartFile file, CustomerAvatar customerAvatar, Customer customer) {
+        try {
+            Map uploadResult = uploadService.uploadImage(file, uploadUtil.buildImageUploadParams(customerAvatar));
+            String fileUrl = (String) uploadResult.get("secure_url");
+            String fileFormat = (String) uploadResult.get("format");
+
+            customerAvatar.setFileName(customerAvatar.getId() + "." + fileFormat);
+            customerAvatar.setFileUrl(fileUrl);
+            customerAvatar.setFileFolder(UploadUtil.IMAGE_UPLOAD_FOLDER);
+            customerAvatar.setCloudId(customerAvatar.getFileFolder() + "/" + customerAvatar.getId());
+            customerAvatar.setCustomer(customer);
+            return customerAvatarService.save(customerAvatar);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new DataInputException("Upload hình ảnh thất bại");
+        }
     }
 }

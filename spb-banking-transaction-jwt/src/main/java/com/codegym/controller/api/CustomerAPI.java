@@ -3,16 +3,20 @@ package com.codegym.controller.api;
 import com.codegym.exception.DataInputException;
 import com.codegym.exception.EmailExistsException;
 import com.codegym.model.Customer;
-import com.codegym.model.dto.CustomerDTO;
-import com.codegym.model.dto.RecipientDTO;
+import com.codegym.model.CustomerAvatar;
+import com.codegym.model.LocationRegion;
+import com.codegym.model.dto.*;
 import com.codegym.service.customer.ICustomerService;
+import com.codegym.service.customerAvatar.ICustomerAvatarService;
 import com.codegym.utils.AppUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -26,14 +30,16 @@ public class CustomerAPI {
 
     @Autowired
     private ICustomerService customerService;
+    @Autowired
+    private ICustomerAvatarService customerAvatarService;
 
     @GetMapping
     public ResponseEntity<?> getAllByDeletedIsFalse() {
-        List<CustomerDTO> customers = customerService.getAllCustomerDTO();
-        if (customers.size() == 0) {
+        List<CustomerAvatarDTO> customerAvatarDTOS = customerService.getAllCustomerAvatarDTO();
+        if (customerAvatarDTOS.size() == 0) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(customers, HttpStatus.OK);
+        return new ResponseEntity<>(customerAvatarDTOS, HttpStatus.OK);
     }
 
     @GetMapping("/{customerId}")
@@ -41,7 +47,7 @@ public class CustomerAPI {
         long cid;
         try {
             cid = Long.parseLong(customerId);
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             throw new DataInputException("ID Khách hàng không hợp lệ.");
         }
 
@@ -55,54 +61,62 @@ public class CustomerAPI {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@Validated @RequestBody CustomerDTO customerDTO, BindingResult bindingResult) {
+    public ResponseEntity<?> create(@Validated CustomerAvatarCreateDTO customerAvatarCreateDTO, BindingResult bindingResult) {
 
+        MultipartFile imageFile = customerAvatarCreateDTO.getFile();
+
+        if (imageFile == null) {
+            throw new DataInputException("Vui lòng chọn hình ảnh.");
+        }
         if (bindingResult.hasFieldErrors()) {
             return appUtils.mapErrorToResponse(bindingResult);
         }
 
-        Optional<CustomerDTO> customerOptionalDTO = customerService.getByEmailDTO(customerDTO.getEmail());
+        Optional<Customer> customerOptional = customerService.findByEmail(customerAvatarCreateDTO.getEmail());
 
-        if (customerOptionalDTO.isPresent()) {
+        if (customerOptional.isPresent()) {
             throw new EmailExistsException("Email đã tồn tại trong hệ thống.");
         }
 
-        Customer customer = customerDTO.toCustomer();
-        customer.getLocationRegion().setId(null);
-        customer.setId(null);
-        customer.setBalance(BigDecimal.ZERO);
-        Customer newCustomer = customerService.save(customer);
+        LocationRegion locationRegion = customerAvatarCreateDTO.toLocationRegion();
+        locationRegion.setId(null);
+        customerAvatarCreateDTO.setId(null);
+        customerAvatarCreateDTO.setBalance(BigDecimal.ZERO);
 
-        return new ResponseEntity<>(newCustomer, HttpStatus.CREATED);
+        CustomerAvatar newCustomerAvatar = customerService.createWithAvatar(customerAvatarCreateDTO, locationRegion);
+
+        return new ResponseEntity<>(newCustomerAvatar.toCustomerAvatarDTO(), HttpStatus.CREATED);
     }
 
-    @PatchMapping("/{customerId}")
-    public ResponseEntity<?> update(@PathVariable Long customerId, @Validated @RequestBody CustomerDTO customerDTO, BindingResult bindingResult) {
 
-        if (bindingResult.hasFieldErrors()) {
-            return appUtils.mapErrorToResponse(bindingResult);
-        }
+    @PatchMapping("/{customerId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    public ResponseEntity<?> update(@PathVariable Long customerId, MultipartFile file, @Validated CustomerUpdateDTO customerUpdateDTO, BindingResult bindingResult) {
 
         Optional<Customer> customerOptional = customerService.findById(customerId);
-        Customer customer = customerDTO.toCustomer();
         if (!customerOptional.isPresent()) {
             throw new DataInputException("ID khách hàng không tồn tại.");
         }
+        LocationRegion locationRegion = customerUpdateDTO.toLocationRegion();
+        Customer customer = customerUpdateDTO.toCustomer(locationRegion);
 
-        Optional<Customer> emailOptional = customerService.findByEmailAndIdIsNot(customer.getEmail(), customerId);
-
-        if (emailOptional.isPresent()) {
-            throw new EmailExistsException("Email đã tồn tại trong hệ thống.");
+        CustomerAvatarDTO customerAvatarDTO = new CustomerAvatarDTO();
+        if (bindingResult.hasFieldErrors()) {
+            return appUtils.mapErrorToResponse(bindingResult);
+        }
+        if (file == null) {
+            customerService.save(customer);
+            customerAvatarDTO = customerAvatarService.getCustomerAvatarById(customerId);
+        } else {
+            CustomerAvatar customerAvatar =  customerService.saveWithAvatar(customerUpdateDTO, file, locationRegion);
+            customerAvatarDTO = customerAvatar.toCustomerAvatarDTO();
         }
 
-        customer.setId(customerId);
-        customer.setBalance(customerOptional.get().getBalance());
-        Customer newCustomer = customerService.save(customer);
-
-        return new ResponseEntity<>(newCustomer, HttpStatus.OK);
+        return new ResponseEntity<>(customerAvatarDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{customerId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> delete(@PathVariable Long customerId) {
 
         Optional<Customer> customerOptional = customerService.findById(customerId);
@@ -118,6 +132,7 @@ public class CustomerAPI {
             throw new DataInputException("Vui lòng liên hệ Administrator.");
         }
     }
+
 
     @GetMapping("/get-all-recipients-without-sender/{senderId}")
     public ResponseEntity<?> getAllRecipientsWithoutSender(@PathVariable long senderId) {

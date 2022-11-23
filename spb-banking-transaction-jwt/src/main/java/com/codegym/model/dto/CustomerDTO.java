@@ -19,7 +19,7 @@ public class CustomerDTO {
     private Long id;
 
     @NotEmpty(message = "Vui lòng nhập tên khách hàng")
-    @Size(min = 5, max = 100, message = "Họ tên có độ dài nằm trong khoảng 5 - 100 ký tự")
+    @Size(min = 5, max = 50, message = "Họ tên có độ dài nằm trong khoảng 5 - 50 ký tự")
     private String fullName;
 
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Email không đúng định dạng")

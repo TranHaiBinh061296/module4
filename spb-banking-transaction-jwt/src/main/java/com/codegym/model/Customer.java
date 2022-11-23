@@ -17,7 +17,6 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "customers")
-@Accessors(chain = true)
 public class Customer extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,4 +60,3 @@ public class Customer extends BaseEntity{
 
     }
 }
-
