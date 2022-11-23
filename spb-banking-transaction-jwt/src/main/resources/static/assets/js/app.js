@@ -49,16 +49,16 @@ class App {
         static showError401() {
             Swal.fire({
                 icon: 'error',
-                title: 'Access Denied',
-                text: 'Invalid credentials!',
+                title: 'Truy cập bị từ chối',
+                text: 'Thông tin không hợp lệ!',
             })
         }
 
         static showError403() {
             Swal.fire({
                 icon: 'error',
-                title: 'Access Denied',
-                text: 'You are not authorized to perform this function!',
+                    title: 'Truy cập bị từ chối',
+                text: 'Bạn không được phép thực hiện chức năng này!',
             })
         }
     }

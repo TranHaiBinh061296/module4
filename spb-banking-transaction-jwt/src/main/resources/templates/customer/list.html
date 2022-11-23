@@ -21,14 +21,14 @@
 
                     <div class="dropdown-menu" aria-labelledby="user-image">
                         <a class="dropdown-item" href="#">
-                            <i class="fa-solid fa-user"></i> <span th:text="${user.getRole().getCode()}"
+                           <span th:text="${user.getRole().getCode()}"
                                                                    style="color: #000000"></span>
                             <br>
                             <span th:text="${user.fullName}" style="color: #b90434; font-weight: bold"></span>
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#"><i class="fa-solid fa-gear"></i> Cài đặt</a>
-                        <a class="dropdown-item" href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a>
+<!--                        <a class="dropdown-item" href="#"> Cài đặt</a>-->
+                        <a class="dropdown-item" href="/logout"> Đăng xuất</a>
                     </div>
                 </div>
                 <button id="btnShowCreateModal" class="btn btn-outline-light">
@@ -47,7 +47,7 @@
         <table id="tbCustomer" class="table table-hover">
             <thead>
             <tr>
-                <th class="text-center">#</th>
+                <th class="text-center">ID</th>
                 <th class="text-center">Image</th>
                 <th class="text-center">Full name</th>
                 <th class="text-center">Email</th>
@@ -61,7 +61,7 @@
             </tr>
             </thead>
             <tbody>
-            <!-- Dữ liệu đổ vào -->
+
             </tbody>
         </table>
     </div>
@@ -100,8 +100,6 @@
             getAllProvinces: App.PROVINCE_URL,
             getAllDistrictsByProvinceId: App.PROVINCE_URL + "district/",
             getAllWardsByDistrictId: App.PROVINCE_URL + "ward/",
-            error_403: App.ERROR_URL + "403",
-            transfer_url: App.TRANSFER_URL,
             getCustomerAvatarById: App.CUSTOMER_AVATAR_URL
         },
         elements: {},
